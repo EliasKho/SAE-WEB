@@ -2,3 +2,6 @@
 
 declare (strict_types = 1);
 require_once 'vendor/autoload.php';
+
+$dispatcher = new iutnc\nrv\dispatcher\Dispatcher();
+$dispatcher->run();
