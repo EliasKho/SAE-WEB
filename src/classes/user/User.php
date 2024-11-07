@@ -11,7 +11,7 @@ class User
     private string $email;
 
     // Rôle de l'utilisateur (STANDARD ou ADMIN)
-    private string $role;
+    private int $role;
 
     /**
      * constructeur de compte utilisateur
@@ -19,12 +19,12 @@ class User
      * @param string $email
      * @param string $role
      */
-    public function __construct(string $username, string $email, string $role) {
+    public function __construct(string $username, string $email, int $role) {
         if (strlen($username) > 50) {
             echo '<script>window.alert("Nom d\'utilisateur trop long (max 50 caractères)")</script>';
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 100) {
             echo '<script>window.alert("Email non valide ou trop long (max 100 caractères)")</script>';
-        } elseif (!in_array($role, ['STANDARD', 'ADMIN'])) {
+        } elseif (!in_array($role, [1,2,3])) {
             echo '<script>window.alert("Rôle invalide")</script>';
         } else {
             $this->username = $username;
