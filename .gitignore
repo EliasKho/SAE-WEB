@@ -1,9 +1,2 @@
-*.iml
-out/
-.idea/
-.DS_Store
-.class
-Thumbs.db
-pom.xml
+/conf/
 *.ini
-*.db.ini
