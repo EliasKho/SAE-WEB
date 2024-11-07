@@ -1,3 +1,4 @@
+
 -- Table LIEU
 CREATE TABLE LIEU (
                       idLieu INT PRIMARY KEY AUTO_INCREMENT,
@@ -31,7 +32,7 @@ CREATE TABLE SPECTACLE (
                            description TEXT,
                            video VARCHAR(100),
                            horaireSpec TIME,
-                           dureeSpec DECIMAL(3, 1),
+                           dureeSpec INT,  -- Durée en minutes
                            idStyle INT,
                            FOREIGN KEY (idStyle) REFERENCES STYLE(idStyle) ON DELETE SET NULL
 );
@@ -48,7 +49,7 @@ CREATE TABLE IMAGE (
                        chemin VARCHAR(255)
 );
 
--- Table JOUER
+-- Table JOUER (relation entre SPECTACLE et ARTISTE)
 CREATE TABLE JOUER (
                        idSpectacle INT,
                        idArtiste INT,
@@ -57,7 +58,7 @@ CREATE TABLE JOUER (
                        PRIMARY KEY (idSpectacle, idArtiste)
 );
 
--- Table APPARTIENT
+-- Table APPARTIENT (relation entre SOIREE et SPECTACLE)
 CREATE TABLE APPARTIENT (
                             idSoiree INT,
                             idSpectacle INT,
@@ -66,7 +67,7 @@ CREATE TABLE APPARTIENT (
                             PRIMARY KEY (idSoiree, idSpectacle)
 );
 
--- Table IMAGESPEC
+-- Table IMAGESPEC (relation entre SPECTACLE et IMAGE)
 CREATE TABLE IMAGESPEC (
                            idSpectacle INT,
                            idImage INT,
@@ -75,7 +76,7 @@ CREATE TABLE IMAGESPEC (
                            PRIMARY KEY (idSpectacle, idImage)
 );
 
--- Table IMAGELIEU
+-- Table IMAGELIEU (relation entre LIEU et IMAGE)
 CREATE TABLE IMAGELIEU (
                            idLieu INT,
                            idImage INT,
@@ -93,7 +94,7 @@ CREATE TABLE USERS (
                        role VARCHAR(10)
 );
 
--- Table PREFERENCE
+-- Table PREFERENCE (relation entre USERS et SPECTACLE)
 CREATE TABLE PREFERENCE (
                             idUser INT,
                             idSpectacle INT,
@@ -101,12 +102,6 @@ CREATE TABLE PREFERENCE (
                             FOREIGN KEY (idSpectacle) REFERENCES SPECTACLE(idSpectacle) ON DELETE CASCADE,
                             PRIMARY KEY (idUser, idSpectacle)
 );
-
-
-
-
-
-
 
 -- Insertion de données de test
 
@@ -133,14 +128,14 @@ INSERT INTO SOIREE (nomSoiree, thematique, dateSoiree, horaireDebut, idLieu) VAL
                                                                                  ('Soirée Rock Revival', 'Rock', '2024-11-24', '20:30:00', 2),
                                                                                  ('Soirée Pop Party', 'Pop', '2024-11-25', '21:00:00', 3);
 
--- Insertion de spectacles
+-- Insertion de spectacles avec la durée en minutes
 INSERT INTO SPECTACLE (titre, description, video, horaireSpec, dureeSpec, idStyle) VALUES
-                                                                                       ('The Classic Rock Show', 'Un hommage aux légendes du rock', 'http://video.com/rockshow', '19:30:00', 1.5, 1),
-                                                                                       ('Metal Overdrive', 'Concert de heavy metal intense', 'http://video.com/metaloverdrive', '20:15:00', 2.0, 4),
-                                                                                       ('Blues Revival', 'Ambiance blues avec les meilleurs artistes', 'http://video.com/bluesrevival', '18:45:00', 1.8, 2),
-                                                                                       ('Smooth Jazz Evening', 'Jazz classique et moderne', 'http://video.com/jazzevening', '19:15:00', 1.2, 3),
-                                                                                       ('Rock Revival', 'Retour aux classiques du rock', 'http://video.com/rockrevival', '20:45:00', 1.7, 1),
-                                                                                       ('Pop Extravaganza', 'Concert pop pour toute la famille', 'http://video.com/popextravaganza', '21:15:00', 1.3, 5);
+                                                                                       ('The Classic Rock Show', 'Un hommage aux légendes du rock', 'http://video.com/rockshow', '19:30:00', 90, 1),
+                                                                                       ('Metal Overdrive', 'Concert de heavy metal intense', 'http://video.com/metaloverdrive', '20:15:00', 120, 4),
+                                                                                       ('Blues Revival', 'Ambiance blues avec les meilleurs artistes', 'http://video.com/bluesrevival', '18:45:00', 110, 2),
+                                                                                       ('Smooth Jazz Evening', 'Jazz classique et moderne', 'http://video.com/jazzevening', '19:15:00', 75, 3),
+                                                                                       ('Rock Revival', 'Retour aux classiques du rock', 'http://video.com/rockrevival', '20:45:00', 105, 1),
+                                                                                       ('Pop Extravaganza', 'Concert pop pour toute la famille', 'http://video.com/popextravaganza', '21:15:00', 80, 5);
 
 -- Insertion d'artistes
 INSERT INTO ARTISTE (nomArtiste) VALUES
@@ -148,14 +143,19 @@ INSERT INTO ARTISTE (nomArtiste) VALUES
                                      ('Metal Fury'),
                                      ('Blues Brothers'),
                                      ('Jazz Masters'),
-                                     ('Pop Stars');
+                                     ('Pop Stars'),
+                                     ('Heavy Hitters'),
+                                     ('Smooth Vibes');
 
--- Association des artistes aux spectacles (table JOUER)
+-- Association des artistes aux spectacles (table JOUER) pour plusieurs groupes par spectacle
 INSERT INTO JOUER (idSpectacle, idArtiste) VALUES
                                                (1, 1),  -- The Rockers jouent dans "The Classic Rock Show"
+                                               (1, 6),  -- Heavy Hitters jouent aussi dans "The Classic Rock Show"
                                                (2, 2),  -- Metal Fury joue dans "Metal Overdrive"
+                                               (2, 6),  -- Heavy Hitters jouent aussi dans "Metal Overdrive"
                                                (3, 3),  -- Blues Brothers jouent dans "Blues Revival"
                                                (4, 4),  -- Jazz Masters jouent dans "Smooth Jazz Evening"
+                                               (4, 7),  -- Smooth Vibes jouent aussi dans "Smooth Jazz Evening"
                                                (5, 1),  -- The Rockers jouent aussi dans "Rock Revival"
                                                (6, 5);  -- Pop Stars jouent dans "Pop Extravaganza"
 
