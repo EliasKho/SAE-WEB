@@ -1,0 +1,13 @@
+{
+    "name": "iutnc/nrv",
+    "description": "Festival de musique",
+    "type": "project",
+    "autoload": {
+    "psr-4": {
+    "iutnc\\nrv\\" : "src/classes"
+    }
+    },
+  "require": {
+    "ext-pdo": "*"
+  }
+}
