@@ -4,7 +4,7 @@
     "type": "project",
     "autoload": {
     "psr-4": {
-    "iutnc\\nrv\\" : "src/classes"
+    "iutnc\\nrv\\" : "../src/classes"
     }
     },
   "require": {
