@@ -1,0 +1,9 @@
+*.iml
+out/
+.idea/
+.DS_Store
+.class
+Thumbs.db
+pom.xml
+*.ini
+*.db.ini
