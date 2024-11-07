@@ -1,6 +1,6 @@
 <?php
 
-namespace iutnc\deefy\compte;
+namespace iutnc\nrv\user;
 
 class User
 {
