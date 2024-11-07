@@ -36,7 +36,7 @@ class Dispatcher{
         </head>
         <body>
                 <ul>
-                    <li><a href='index.php?action=default'>Deefy</a></li>
+                    <li><a href='index.php?action=default'>Festival</a></li>
                 <div class="content">
                     $html
                 </div>
