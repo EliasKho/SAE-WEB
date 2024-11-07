@@ -17,10 +17,10 @@ class Authz
      * @return bool
      */
     public function isAdmin(): bool {
-        return $this->user->role === 'ADMIN';
+        return $this->user->role > 3;
     }
 
     public function isStaff(): bool {
-        return $this->user->role === 'STAFF';
+        return $this->user->role > 2;
     }
 }
