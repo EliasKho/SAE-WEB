@@ -40,8 +40,7 @@ class NRVRepository{
     public function getAllSpectacles(): array
     {
         $stmt = $this->pdo->prepare("SELECT * FROM spectacle inner join style on spectacle.idStyle = style.idStyle");
-        $res = $stmt->execute();
-
+        $stmt->execute();
         while ($s = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $id = $s['idSpectacle'];
             $titre = $s['titre'];
