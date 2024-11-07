@@ -33,16 +33,27 @@ class Dispatcher{
         <meta charset='UTF-8'>
         <head>
             <title>NRV</title>         
+            <link rel="stylesheet" href="styles.css"> <!-- Inclure le CSS -->
         </head>
         <body>
-                <ul>
-                    <li><a href='index.php?action=default'>Festival</a></li>
-                <div class="content">
-                    $html
-                </div>
+            <header>
+                <h1>Bienvenue sur le site NRV</h1>
+                <nav>
+                    <ul>
+                        <li><a href='index.php?action=connexion' class="button">Connexion</a></li>
+                        <li><a href='index.php?action=inscription' class="button">Inscription</a></li>
+                        <li><a href='index.php?action=preferences' class="button">Mes Préférences</a></li>
+                        <li><a href='index.php?action=festival' class="button">Voir Festival</a></li>
+                    </ul>
+                </nav>
+            </header>
+            <div class="content">
+                $html
+            </div>
         </body>
         </html>
         FIN;
         echo $final;
     }
+
 }
