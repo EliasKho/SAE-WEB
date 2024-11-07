@@ -3,6 +3,7 @@
 namespace iutnc\nrv\action;
 
 use iutnc\nrv\exception\CompteException;
+use iutnc\nrv\repository\NRVRepository;
 use iutnc\nrv\user\User;
 
 class Connexion extends Action {
@@ -15,7 +16,8 @@ class Connexion extends Action {
      * @throws CompteException
      */
     public static function connexion($username, $password) {
-        $bd = ConnectionFactory::makeConnection();
+        $bd = NRVRepository::getInstance();
+        $st  = $bd->getUserFromMail();
         $st = $bd->prepare("SELECT * FROM users WHERE username = :username");
         $st->execute(['username' => $username]);
 
