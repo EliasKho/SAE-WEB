@@ -16,7 +16,7 @@ class ComposerStaticIniteea12d58de8bbf7e18a5ab6e47dd3955
     public static $prefixDirsPsr4 = array (
         'iutnc\\nrv\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/classes',
+            0 => __DIR__ . '/../..' . '/../src/classes',
         ),
     );
 

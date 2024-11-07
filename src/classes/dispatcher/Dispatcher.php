@@ -2,7 +2,7 @@
 
 namespace iutnc\nrv\dispatcher;
 
-require_once 'vendor/autoload.php';
+require_once 'loader/vendor/autoload.php';
 use iutnc\nrv\action as ACT;
 
 class Dispatcher{
