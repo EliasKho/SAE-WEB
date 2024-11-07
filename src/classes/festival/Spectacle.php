@@ -28,4 +28,9 @@ class Spectacle
         return $this->$name;
     }
 
+    public function setId(int $id)
+    {
+        $this->idSpectacle = $id;
+    }
+
 }

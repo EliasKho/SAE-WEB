@@ -2,18 +2,20 @@
 
 namespace iutnc\nrv\action;
 
+use iutnc\nrv\render\SpectacleRender;
 use iutnc\nrv\repository\NRVRepository;
 
 class Festival extends Action {
 
-    protected function executeGet(): string{
+    protected function executeGet(): string {
         $r = NRVRepository::getInstance();
-        $festivals = $r->getAllFestivals();
-        $html = "<ul>";
-        foreach ($festivals as $festival) {
-            $render = new FestivalRenderer();
+        $spectacles = $r->getAllSpectacles();
+        $html = '';
+        foreach ($spectacles as $spectacle) {
+            $render = new SpectacleRender($spectacle);
+            $html .= $render->renderCompact();
         }
-
+        return $html;
     }
 
     protected function executePost(): string{

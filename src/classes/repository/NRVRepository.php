@@ -2,6 +2,8 @@
 
 namespace iutnc\nrv\repository;
 
+use iutnc\nrv\festival\Spectacle;
+
 class NRVRepository{
     private \PDO $pdo;
     private static ?NRVRepository $instance = null;
@@ -35,4 +37,25 @@ class NRVRepository{
         self::$config = ['dsn' => $dsn, 'user' => $conf['user'], 'pass' => $conf['pass']];
     }
 
+    public function getAllSpectacles(): array
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM spectacle inner join style on spectacle.idStyle = style.idStyle");
+        $res = $stmt->execute();
+
+        while ($s = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $id = $s['idSpectacle'];
+            $titre = $s['titre'];
+            $description = $s['description'];
+            $video = $s['video'];
+            $horaire = $s['horaireSpec'];
+            $duree = $s['dureeSpec'];
+            $style = $s['nomStyle'];
+
+            $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style);
+            $spectacle->setId($id);
+            $spectacles[] = $spectacle;
+        }
+
+        return $spectacles;
+    }
 }

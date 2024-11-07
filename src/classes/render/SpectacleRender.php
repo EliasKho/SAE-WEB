@@ -4,7 +4,7 @@ namespace iutnc\nrv\render;
 
 use iutnc\nrv\festival\Spectacle;
 
-class SpectaleRender
+class SpectacleRender
 {
     private Spectacle $spectacle;
 
@@ -13,7 +13,7 @@ class SpectaleRender
         $this->spectacle = $spectacle;
     }
 
-    protected function renderCompact(): string
+    public function renderCompact(): string
     {
         return "<div class='spectacle'>
                     <h2>{$this->spectacle->titre}</h2>
