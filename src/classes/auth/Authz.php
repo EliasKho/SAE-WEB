@@ -2,6 +2,7 @@
 
 namespace iutnc\nrv\auth;
 
+use iutnc\nrv\exception\AuthorizationException;
 use iutnc\nrv\user\User;
 
 class Authz
@@ -13,14 +14,14 @@ class Authz
     }
 
     /**
-     * Vérifie si l'utilisateur est un administrateur
+     * Vérifie si l'utilisateur est à le rôle nécessaire
      * @return bool
      */
-    public function isAdmin(): bool {
-        return $this->user->role > 3;
-    }
-
-    public function isStaff(): bool {
-        return $this->user->role > 2;
+    public function checkRole(int $role): bool
+    {
+        if ($this->user->role < $role) {
+            throw new AuthorizationException("Accès refusé");
+        }
+        return true;
     }
 }

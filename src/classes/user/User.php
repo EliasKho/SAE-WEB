@@ -4,27 +4,31 @@ namespace iutnc\nrv\user;
 
 class User
 {
+    private static int $STANDARD = 1;
+    private static int $STAFF = 2;
+    private static int $ADMIN = 3;
+
     // Nom d'utilisateur
     private string $username;
 
     // Adresse email de l'utilisateur
     private string $email;
 
-    // Rôle de l'utilisateur (STANDARD ou ADMIN)
+    // Rôle de l'utilisateur
     private int $role;
 
     /**
      * constructeur de compte utilisateur
      * @param string $username
      * @param string $email
-     * @param string $role
+     * @param int $role
      */
     public function __construct(string $username, string $email, int $role) {
         if (strlen($username) > 50) {
             echo '<script>window.alert("Nom d\'utilisateur trop long (max 50 caractères)")</script>';
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 100) {
             echo '<script>window.alert("Email non valide ou trop long (max 100 caractères)")</script>';
-        } elseif (!in_array($role, [1,2,3])) {
+        } elseif (!in_array($role, [User::$STANDARD,User::$STAFF,User::$ADMIN])) {
             echo '<script>window.alert("Rôle invalide")</script>';
         } else {
             $this->username = $username;
@@ -46,9 +50,5 @@ class User
         } else {
             throw new \Exception("$at: propriété invalide");
         }
-    }
-
-    public function getUsername(): string {
-        return $this->username;
     }
 }
