@@ -1,6 +1,6 @@
 SAE DEV WEB
 
-Membres : Elias KHKODJAOUI - Alexandre HARY - Quentin MEYER - Léo FONTAINE
+Membres : Elias KHODJAOUI - Alexandre HARY - Quentin MEYER - Léo FONTAINE
 
 EliasKho = Elias
 alexxela57 = Alexandre
