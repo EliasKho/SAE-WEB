@@ -2,7 +2,6 @@
 
 namespace iutnc\nrv\dispatcher;
 
-require_once 'loader/vendor/autoload.php';
 use iutnc\nrv\action as ACT;
 
 class Dispatcher{
@@ -19,6 +18,18 @@ class Dispatcher{
     public function run() : void
     {
         switch ($this->action) {
+            case 'connexion':
+                $act = new ACT\Connexion();
+                break;
+            case 'inscription':
+                $act = new ACT\Inscription();
+                break;
+            case 'preferences':
+                $act = new ACT\Preferences();
+                break;
+            case 'festival':
+                $act = new ACT\Festival();
+                break;
             default:
                 $act = new ACT\DefaultAction();
                 break;
