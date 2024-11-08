@@ -21,6 +21,7 @@ CREATE TABLE SOIREE (
                         thematique VARCHAR(50),
                         dateSoiree DATE,
                         horaireDebut TIME,
+                        tarif DECIMAL(5, 2),
                         idLieu INT,
                         FOREIGN KEY (idLieu) REFERENCES LIEU(idLieu) ON DELETE CASCADE
 );
@@ -121,13 +122,13 @@ INSERT INTO STYLE (nomStyle) VALUES
                                  ('Pop');
 
 -- Insertion de soirées
-INSERT INTO SOIREE (nomSoiree, thematique, dateSoiree, horaireDebut, idLieu) VALUES
-                                                                                 ('Soirée Rock Legends', 'Classic Rock', '2024-11-20', '19:00:00', 1),
-                                                                                 ('Soirée Metal Madness', 'Metal', '2024-11-21', '20:00:00', 2),
-                                                                                 ('Soirée Blues Vibes', 'Blues', '2024-11-22', '18:30:00', 1),
-                                                                                 ('Soirée Jazz Night', 'Jazz', '2024-11-23', '19:00:00', 3),
-                                                                                 ('Soirée Rock Revival', 'Rock', '2024-11-24', '20:30:00', 2),
-                                                                                 ('Soirée Pop Party', 'Pop', '2024-11-25', '21:00:00', 3);
+INSERT INTO SOIREE (nomSoiree, thematique, dateSoiree, horaireDebut, tarif, idLieu) VALUES
+                                                                                 ('Soirée Rock Legends', 'Classic Rock', '2024-11-20', '19:00:00', 20, 1),
+                                                                                 ('Soirée Metal Madness', 'Metal', '2024-11-21', '20:00:00', 22.50, 2),
+                                                                                 ('Soirée Blues Vibes', 'Blues', '2024-11-22', '18:30:00', 18.25, 1),
+                                                                                 ('Soirée Jazz Night', 'Jazz', '2024-11-23', '19:00:00', 17, 3),
+                                                                                 ('Soirée Rock Revival', 'Rock', '2024-11-24', '20:30:00', 21, 2),
+                                                                                 ('Soirée Pop Party', 'Pop', '2024-11-25', '21:00:00', 19.75, 3);
 
 -- Insertion de spectacles avec la durée en minutes
 INSERT INTO SPECTACLE (titre, description, video, horaireSpec, dureeSpec, idStyle) VALUES
