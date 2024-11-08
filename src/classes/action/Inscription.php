@@ -51,11 +51,10 @@ class Inscription extends Action {
             $resInscr = $r->inscription($user->__get("username"), $user->__get("email"), $password, User::$STANDARD);
             $s .= $resInscr;
         } catch (CompteException $e) {
-            $erreur = $e->getMessage();
-            echo "<script>window.alert($erreur);</script>";
-            $s = $this->executeGet();
-
-
+            $s .= $this->executeGet();
+            $erreur = addslashes($e->getMessage());
+            $s .= "<script>window.onload = ()=>{window.alert('$erreur');}</script>";
+            $s .= "<br>".$erreur;
         }
         return $s;
     }
