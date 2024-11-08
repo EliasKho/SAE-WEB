@@ -47,10 +47,15 @@ class Inscription extends Action {
 
         $s = '<div class="container">';
         try {
-            $resInscr = $r->inscription($username, $email, $password, User::$STANDARD);
+            $user = new User($username,$email);
+            $resInscr = $r->inscription($user->__get("username"), $user->__get("email"), $password, User::$STANDARD);
             $s .= $resInscr;
         } catch (CompteException $e) {
-            $s .= "<p>Erreur : " . $e->getMessage() . "</p>";
+            $erreur = $e->getMessage();
+            echo "<script>window.alert($erreur);</script>";
+            $s = $this->executeGet();
+
+
         }
         return $s;
     }

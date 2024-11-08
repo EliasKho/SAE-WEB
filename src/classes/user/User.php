@@ -2,6 +2,8 @@
 
 namespace iutnc\nrv\user;
 
+use iutnc\nrv\exception\CompteException;
+
 class User
 {
     public static int $STANDARD = 1;
@@ -28,9 +30,9 @@ class User
     public function __construct(string $username, string $email) {
         $this->id = 0;
         if (strlen($username) > 50) {
-            echo '<script>window.alert("Nom d\'utilisateur trop long (max 50 caractères)")</script>';
+            throw new CompteException("Nom d\'utilisateur trop long (max 50 caractères)");
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 100) {
-            echo '<script>window.alert("Email non valide ou trop long (max 100 caractères)")</script>';
+            throw new CompteException("Email non valide ou trop long (max 100 caractères)");
         } else {
             $this->username = $username;
             $this->email = $email;

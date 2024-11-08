@@ -12,14 +12,6 @@ use iutnc\nrv\user\User;
 class Connexion extends Action {
 
     /**
-     * Methode qui permet a un utilisateur de se connecter
-     * @param $username
-     * @param $password
-     * @return void
-     * @throws CompteException
-     */
-
-    /**
      * Methode qui s'execute quand le bouton est cliqué
      * @return string
      */
