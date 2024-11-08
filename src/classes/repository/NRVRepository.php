@@ -146,16 +146,13 @@ class NRVRepository{
         $stm = $this->pdo->prepare("SELECT*FROM users");
         $stm->execute();
         $s ="";
-        echo ("e");        // vérification si l'utilisateur ou l'email existe déjà
+        // vérification si l'utilisateur ou l'email existe déjà
         while ($s = $stm->fetch(\PDO::FETCH_ASSOC)) {
-            echo ("f");
             if ($s['email'] === $email) {
-                echo ("g");
 
                 return "Un utilisateur avec cet email existe déjà";
             }
             if ($s['username'] === $username) {
-                echo ("h");
                 return "Un utilisateur avec ce nom d'utilisateur existe déjà";
             }
         }
