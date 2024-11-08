@@ -34,6 +34,7 @@ CREATE TABLE SPECTACLE (
                            horaireSpec TIME,
                            dureeSpec INT,  -- Durée en minutes
                            idStyle INT,
+                           estAnnule BOOLEAN DEFAULT FALSE,
                            FOREIGN KEY (idStyle) REFERENCES STYLE(idStyle) ON DELETE SET NULL
 );
 

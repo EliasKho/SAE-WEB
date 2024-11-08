@@ -13,6 +13,7 @@ class Spectacle
     private string $style;
     private array $images;
     private array $artistes;
+    private bool $annule;
 
     public function __construct($titre, $description, $video, $horaireSpec, $dureeSpec, $style)
     {
@@ -25,6 +26,7 @@ class Spectacle
         $this->style = $style;
         $this->images = [];
         $this->artistes = [];
+        $this->annule = false;
     }
 
     public function __get(string $name)
@@ -45,6 +47,11 @@ class Spectacle
     public function setArtistes(array $artistes)
     {
         $this->artistes = $artistes;
+    }
+
+    public function annuler()
+    {
+        $this->annule = true;
     }
 
 }
