@@ -18,29 +18,6 @@ class Connexion extends Action {
      * @return void
      * @throws CompteException
      */
-    public static function connexion($username, $password) {
-        $bd = NRVRepository::getInstance();
-        $user = $bd->getUserFromMail();
-
-
-        if ($user) {
-            $dbPassword = $user['password'];
-
-            // Vérifie si le mot de passe est hashé en utilisant une regex simple
-            $isHashed = preg_match('/^\$2y\$/', $dbPassword);
-
-            if (($isHashed && password_verify($password, $dbPassword)) || (!$isHashed && $password === $dbPassword)) {
-                // Si le mot de passe est correct, créer l'utilisateur en session
-                $_SESSION['connection'] = new User($user['username'], $user['email']); //role par defaut : standard
-            } else {
-                // Mot de passe incorrect
-                throw new CompteException("La connexion a échoué. Vérifiez votre nom d'utilisateur et votre mot de passe.");
-            }
-        } else {
-            // Aucun utilisateur trouvé
-            throw new CompteException("La connexion a échoué. Vérifiez votre nom d'utilisateur et votre mot de passe.");
-        }
-    }
 
     /**
      * Methode qui s'execute quand le bouton est cliqué
