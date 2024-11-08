@@ -5,6 +5,7 @@ namespace iutnc\nrv\repository;
 use iutnc\nrv\exception\AuthnException;
 use iutnc\nrv\festival\Spectacle;
 use iutnc\nrv\user\User;
+use PDO;
 
 class NRVRepository{
     private \PDO $pdo;
@@ -139,5 +140,36 @@ class NRVRepository{
             $artistes[] = $a['nomArtiste'];
         }
         return $artistes;
+    }
+
+    public function inscription($username, $email, $password, $role): String{
+        $stm = $this->pdo->prepare("SELECT*FROM users");
+        $stm->execute();
+        $s ="";
+        echo ("e");        // vérification si l'utilisateur ou l'email existe déjà
+        while ($s = $stm->fetch(\PDO::FETCH_ASSOC)) {
+            echo ("f");
+            if ($s['email'] === $email) {
+                echo ("g");
+
+                return "Un utilisateur avec cet email existe déjà";
+            }
+            if ($s['username'] === $username) {
+                echo ("h");
+                return "Un utilisateur avec ce nom d'utilisateur existe déjà";
+            }
+        }
+
+        $hashPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        //Insertion des données
+        $stm1 = $this->pdo->prepare("INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)");
+        $stm1->bindParam(':username', $username, PDO::PARAM_STR);
+        $stm1->bindParam(':email', $email, PDO::PARAM_STR);
+        $stm1->bindParam(':password', $hashPassword, PDO::PARAM_STR);
+        $stm1->bindParam(':role', $role, PDO::PARAM_STR);
+        $stm1->execute();
+
+        return "Inscription réussie";
     }
 }
