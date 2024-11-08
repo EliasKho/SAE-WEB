@@ -8,14 +8,16 @@ class User
     private static int $STAFF = 2;
     private static int $ADMIN = 3;
 
+    protected int $id;
+
     // Nom d'utilisateur
-    private string $username;
+    protected string $username;
 
     // Adresse email de l'utilisateur
-    private string $email;
+    protected string $email;
 
     // Rôle de l'utilisateur
-    private int $role;
+    protected int $role;
 
     /**
      * constructeur de compte utilisateur
@@ -23,17 +25,16 @@ class User
      * @param string $email
      * @param int $role
      */
-    public function __construct(string $username, string $email, int $role) {
+    public function __construct(string $username, string $email) {
+        $this->id = 0;
         if (strlen($username) > 50) {
             echo '<script>window.alert("Nom d\'utilisateur trop long (max 50 caractères)")</script>';
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 100) {
             echo '<script>window.alert("Email non valide ou trop long (max 100 caractères)")</script>';
-        } elseif (!in_array($role, [User::$STANDARD,User::$STAFF,User::$ADMIN])) {
-            echo '<script>window.alert("Rôle invalide")</script>';
         } else {
             $this->username = $username;
             $this->email = $email;
-            $this->role = $role;
+            $this->role = User::$STANDARD;
         }
     }
 
@@ -50,5 +51,16 @@ class User
         } else {
             throw new \Exception("$at: propriété invalide");
         }
+    }
+
+    public function setId(int $id) {
+        $this->id = $id;
+    }
+
+    public function setRole(int $role) {
+        if (!in_array($role, [User::$STANDARD,User::$STAFF,User::$ADMIN])) {
+            echo '<script>window.alert("Rôle invalide")</script>';
+        }
+        $this->role = $role;
     }
 }

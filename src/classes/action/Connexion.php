@@ -2,9 +2,12 @@
 
 namespace iutnc\nrv\action;
 
+use iutnc\nrv\auth\AuthnProvider;
+use iutnc\nrv\exception\AuthnException;
 use iutnc\nrv\exception\CompteException;
 use iutnc\nrv\repository\NRVRepository;
 use iutnc\nrv\user\User;
+
 
 class Connexion extends Action {
 
@@ -17,11 +20,8 @@ class Connexion extends Action {
      */
     public static function connexion($username, $password) {
         $bd = NRVRepository::getInstance();
-        $st  = $bd->getUserFromMail();
-        $st = $bd->prepare("SELECT * FROM users WHERE username = :username");
-        $st->execute(['username' => $username]);
+        $user = $bd->getUserFromMail();
 
-        $user = $st->fetch();
 
         if ($user) {
             $dbPassword = $user['password'];
@@ -31,7 +31,7 @@ class Connexion extends Action {
 
             if (($isHashed && password_verify($password, $dbPassword)) || (!$isHashed && $password === $dbPassword)) {
                 // Si le mot de passe est correct, créer l'utilisateur en session
-                $_SESSION['connection'] = new User($user['username'], $user['email'], $user['role']);
+                $_SESSION['connection'] = new User($user['username'], $user['email']); //role par defaut : standard
             } else {
                 // Mot de passe incorrect
                 throw new CompteException("La connexion a échoué. Vérifiez votre nom d'utilisateur et votre mot de passe.");
@@ -47,19 +47,6 @@ class Connexion extends Action {
      * @return string
      */
     public function executeGet(): string {
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            $username = $_POST['Username'];
-            $password = $_POST['Password'];
-            try {
-                self::connexion($username, $password);
-                $message = "Connexion réussie !";
-                header("Location: ?action=pageCompte");
-                exit;
-            } catch (CompteException $e) {
-                $message = $e->getMessage();
-            }
-        }
-
         $form = '<div class="container">
                     <h2>Connexion</h2>
                     <form action="?action=connexion" method="post">
@@ -74,6 +61,14 @@ class Connexion extends Action {
 
     protected function executePost(): string
     {
-        return $this->executeGet();
+        $username = $_POST['Username'];
+        $password = $_POST['Password'];
+        try {
+            AuthnProvider::signin($username, $password);
+        } catch (AuthnException $e) {
+            return $e->getMessage();
+        }
+        $user = unserialize($_SESSION['user']);
+        return "Vous êtes connecté, bienvenue " . $user->username;
     }
 }

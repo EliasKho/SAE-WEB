@@ -91,7 +91,7 @@ CREATE TABLE USERS (
                        username VARCHAR(50) NOT NULL UNIQUE,
                        email VARCHAR(100) NOT NULL UNIQUE,
                        password VARCHAR(100) NOT NULL,
-                       role VARCHAR(10)
+                       role int(3) NOT NULL
 );
 
 -- Table PREFERENCE (relation entre USERS et SPECTACLE)
@@ -197,9 +197,9 @@ INSERT INTO IMAGELIEU (idLieu, idImage) VALUES
 
 -- Insertion de comptes d'utilisateurs (table USERS)
 INSERT INTO USERS (username, email, password, role) VALUES
-                                                        ('admin_user', 'admin@example.com', 'hashed_password_admin', 'admin'),
-                                                        ('staff_user', 'staff@example.com', 'hashed_password_staff', 'staff'),
-                                                        ('standard_user', 'user@example.com', 'hashed_password_user', 'standard');
+                                                        ('admin_user', 'admin@example.com', '$2y$12$.0RaLeuDaTsLZ.Uwlaz4bu5OqgXhmkwiWWHrl/SWm/94pc5HrMiBC', 3),
+                                                        ('staff_user', 'staff@example.com', '$2y$12$Nem3hvBl/U9fLJp4IB/TuOUbuqgnlwAr6XfGC8oSZ8Gvirmz3pBfu', 2),
+                                                        ('standard_user', 'user@example.com', '$2y$12$SugwzyylTBY/M9tEEwE6JeO4wAOes2bw3dQKU1fuoWDRS3tttGU2i', 1);
 
 -- Insertion de préférences utilisateurs (table PREFERENCE)
 INSERT INTO PREFERENCE (idUser, idSpectacle) VALUES

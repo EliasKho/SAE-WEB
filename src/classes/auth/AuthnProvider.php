@@ -5,17 +5,18 @@ namespace iutnc\nrv\auth;
 use iutnc\nrv\exception\AuthnException;
 use iutnc\nrv\repository\NRVRepository;
 use iutnc\nrv\user\User;
-
 class AuthnProvider
 {
 
-    public static function signin(string $email, string $password): void
+    public static function signin(string $username, string $password): void
     {
         $r = NRVRepository::getInstance();
-        $user = $r->getUserFromMail($email); // recupere le mdp hashé dans la bd
+        $user = $r->getUserFromUsername($username); // recupere le mdp hashé dans la bd
+        $userPass = $r->getPasswordFromUser($user);
 
-        if (!password_verify($password, $user->password))
+        if (!password_verify($password, $userPass)) {
             throw new AuthnException("Mot de passe incorrect");
+        }
 
         $_SESSION['user'] = serialize($user);
     }
