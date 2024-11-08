@@ -10,7 +10,9 @@ class Spectacle
     private string $video;
     private string $horaireSpec;
     private string $dureeSpec;
-    private String $style;
+    private string $style;
+    private array $images;
+    private array $artistes;
 
     public function __construct($titre, $description, $video, $horaireSpec, $dureeSpec, $style)
     {
@@ -21,6 +23,8 @@ class Spectacle
         $this->horaireSpec = $horaireSpec;
         $this->dureeSpec = $dureeSpec;
         $this->style = $style;
+        $this->images = [];
+        $this->artistes = [];
     }
 
     public function __get(string $name)
@@ -31,6 +35,16 @@ class Spectacle
     public function setId(int $id)
     {
         $this->idSpectacle = $id;
+    }
+
+    public function setImages(array $images)
+    {
+        $this->images = $images;
+    }
+
+    public function setArtistes(array $artistes)
+    {
+        $this->artistes = $artistes;
     }
 
 }

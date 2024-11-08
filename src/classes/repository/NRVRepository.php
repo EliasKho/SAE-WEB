@@ -52,8 +52,13 @@ class NRVRepository{
             $duree = $s['dureeSpec'];
             $style = $s['nomStyle'];
 
+            $images = $this->getImagesBySpectacle($id);
+            $artistes = $this->getArtistesBySpectacle($id);
+
             $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style);
             $spectacle->setId($id);
+            $spectacle->setImages($images);
+            $spectacle->setArtistes($artistes);
             $spectacles[] = $spectacle;
         }
 
@@ -89,5 +94,50 @@ class NRVRepository{
             throw new AuthnException("Aucun mot de passe trouvé");
         }
         return $password['password'];
+    }
+
+    public function getSpectacleById(int $idSpec){
+        $stmt = $this->pdo->prepare("SELECT * FROM spectacle inner join style on spectacle.idStyle = style.idStyle WHERE idSpectacle = ?");
+        $stmt->bindParam(1, $idSpec);
+        $stmt->execute();
+        $s = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $id = $s['idSpectacle'];
+        $titre = $s['titre'];
+        $description = $s['description'];
+        $video = $s['video'];
+        $horaire = $s['horaireSpec'];
+        $duree = $s['dureeSpec'];
+        $style = $s['nomStyle'];
+        $images = $this->getImagesBySpectacle($id);
+        $artistes = $this->getArtistesBySpectacle($id);
+
+        $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style);
+        $spectacle->setId($id);
+        $spectacle->setImages($images);
+        $spectacle->setArtistes($artistes);
+        return $spectacle;
+    }
+
+
+    public function getImagesBySpectacle(int $id){
+        $stmt = $this->pdo->prepare("SELECT * FROM image inner join imageSpec on imageSpec.idImage = image.idImage WHERE idSpectacle = ?");
+        $stmt->bindParam(1, $id);
+        $stmt->execute();
+        $images = [];
+        while ($i = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $images[] = 'img/'.$i['chemin'];
+        }
+        return $images;
+    }
+
+    public function getArtistesBySpectacle(int $id){
+        $stmt = $this->pdo->prepare("SELECT * FROM artiste inner join jouer on jouer.idArtiste = artiste.idArtiste WHERE idSpectacle =?");
+        $stmt->bindParam(1, $id);
+        $stmt->execute();
+        $artistes = [];
+        while ($a = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $artistes[] = $a['nomArtiste'];
+        }
+        return $artistes;
     }
 }

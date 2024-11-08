@@ -30,6 +30,9 @@ class Dispatcher{
             case 'festival':
                 $act = new ACT\Festival();
                 break;
+            case 'display-spectacle':
+                $act = new ACT\DisplaySpectacle();
+                break;
             default:
                 $act = new ACT\DefaultAction();
                 break;
