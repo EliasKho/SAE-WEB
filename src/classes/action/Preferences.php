@@ -2,6 +2,8 @@
 
 namespace iutnc\nrv\action;
 
+use iutnc\nrv\festival\Spectacle;
+
 class Preferences extends Action {
 
     protected function executeGet(): string
@@ -17,10 +19,16 @@ class Preferences extends Action {
 
     protected function executePost(): string
     {
-        $preference = $_POST['preference'];
-        if (!in_array($preference, $_SESSION['preferences'])) {
-            $_SESSION['preferences'][] = $preference;
-        }
+//        Créer un nouveau spectacle
+        $titre = $_POST['titre'];
+        $description = $_POST['description'];
+        $video = $_POST['video'];
+        $horaireSpec = $_POST['horaireSpec'];
+        $dureeSpec = $_POST['dureeSpec'];
+        $style = $_POST['style'];
+        $spectacle = new Spectacle($titre, $description, $video, $horaireSpec, $dureeSpec, $style);
+        $spectacle->setImages($_POST['images']);
+        $spectacle->setArtistes($_POST['artistes']);
         return $this->executeGet();
     }
 }

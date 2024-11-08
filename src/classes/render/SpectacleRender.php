@@ -20,7 +20,7 @@ class SpectacleRender
         return <<<FIN
                 <a href = "index.php?action=display-spectacle&id={$id}"><div class='spectacle'>
                     <h2>{$this->spectacle->titre}</h2>
-                    <img src='{$image}'>
+                    <img alt="image du spectacle" src='{$image}'>
                     <p>{$this->spectacle->horaireSpec}</p>
                     <p>{$this->spectacle->dureeSpec}</p>
                 </div></a>
@@ -33,13 +33,14 @@ class SpectacleRender
 
         $images = '';
         foreach ($this->spectacle->images as $image) {
-            $images .= "<img src='{$image}'>";
+            $images .= "<img alt='image du spectacle' src='{$image}'>";
         }
         $artistes = '';
         foreach ($this->spectacle->artistes as $artiste) {
             $artistes .= "<p>{$artiste}</p>";
         }
-        $video = "<video controls><source src='{$this->spectacle->video}' type='video/mp4'></video>";
+        $video = "<iframe width='560' height='315' src='{$this->spectacle->video}' title='YouTube video player' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' referrerpolicy='strict-origin-when-cross-origin' allowfullscreen></iframe>";
+//            "<video controls><source src='{$this->spectacle->video}' type='video/mp4'></video>";
         return <<<FIN
                 <div class='spectacle'>
                     <h2>{$this->spectacle->titre}</h2>
