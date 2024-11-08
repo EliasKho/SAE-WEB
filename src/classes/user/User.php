@@ -4,9 +4,9 @@ namespace iutnc\nrv\user;
 
 class User
 {
-    private static int $STANDARD = 1;
-    private static int $STAFF = 2;
-    private static int $ADMIN = 3;
+    public static int $STANDARD = 1;
+    public static int $STAFF = 2;
+    public static int $ADMIN = 3;
 
     protected int $id;
 

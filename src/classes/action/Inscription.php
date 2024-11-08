@@ -4,6 +4,7 @@ namespace iutnc\nrv\action;
 
 use iutnc\nrv\exception\CompteException;
 use iutnc\nrv\repository\NRVRepository;
+use iutnc\nrv\user\User;
 
 class Inscription extends Action {
 
@@ -20,24 +21,10 @@ class Inscription extends Action {
 
     protected function executeGet(): string
     {
-        $r = NRVRepository::getInstance();
 
         $s = '<div class="container">';
         $s .= "<h2>Inscription</h2>";
 
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $username = $_POST["username"] ?? '';
-            $email = $_POST["email"] ?? '';
-            $password = $_POST["password"] ?? '';
-
-
-            try {
-                $resInscr = $r->inscription($username, $email, $password, "standard");
-                $s .= $resInscr;
-            } catch (CompteException $e) {
-                $s .= "<p>Erreur : " . $e->getMessage() . "</p>";
-            }
-        }
         // Formulaire HTML
         $s .= '<form id="f1" action="?action=inscription" method="post">
                 <input type="text" name="username" placeholder="Nom d\'utilisateur" required>
@@ -52,6 +39,19 @@ class Inscription extends Action {
 
     protected function executePost(): string
     {
-        return $this->executeGet();
+        $r = NRVRepository::getInstance();
+
+        $username = $_POST["username"] ?? '';
+        $email = $_POST["email"] ?? '';
+        $password = $_POST["password"] ?? '';
+
+        $s = '<div class="container">';
+        try {
+            $resInscr = $r->inscription($username, $email, $password, User::$STANDARD);
+            $s .= $resInscr;
+        } catch (CompteException $e) {
+            $s .= "<p>Erreur : " . $e->getMessage() . "</p>";
+        }
+        return $s;
     }
 }
