@@ -29,6 +29,10 @@ class Preferences extends Action {
         $spectacle = new Spectacle($titre, $description, $video, $horaireSpec, $dureeSpec, $style);
         $spectacle->setImages($_POST['images']);
         $spectacle->setArtistes($_POST['artistes']);
+//        Si l'utilisateur n'est pas connecté, ajouter le spectacle dans les préférences en Session
+        if (!isset($_SESSION['user'])) {
+            $_SESSION['preferences'][] = $spectacle;
+        }
         return $this->executeGet();
     }
 }
