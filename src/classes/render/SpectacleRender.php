@@ -25,6 +25,7 @@ class SpectacleRender
         $horaire = filter_var($this->spectacle->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         $estAnnule = filter_var($this->spectacle->estAnnule, FILTER_SANITIZE_SPECIAL_CHARS);
+        $btnAnnuler = "";
 
         // Affichage du label "ANNULÉ" si le spectacle est annulé
         $annuleLabel = $estAnnule ? "<div class='annule'>ANNULÉ</div>" : "";
