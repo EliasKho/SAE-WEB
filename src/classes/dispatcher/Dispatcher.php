@@ -6,6 +6,7 @@ use iutnc\nrv\action as ACT;
 use iutnc\nrv\auth\AuthnProvider;
 use iutnc\nrv\auth\Authz;
 use iutnc\nrv\user\User;
+use Exception;
 
 class Dispatcher
 {
@@ -57,7 +58,7 @@ class Dispatcher
             if ($authz->checkRole(User::$ADMIN)) {
                 $adminMenu = "<li><a href='index.php?action=creerStaff' class='button'>Créer Staff</a></li>";
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Aucun utilisateur connecté ou l'utilisateur n'est pas un admin
         }
 
