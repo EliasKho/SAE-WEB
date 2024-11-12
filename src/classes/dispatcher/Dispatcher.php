@@ -64,8 +64,12 @@ class Dispatcher
             if ($authz->checkRole(User::$ADMIN)) {
                 $adminMenu = "<li><a href='index.php?action=creerStaff' class='button'>Créer Staff</a></li>";
             }
-        } catch (AuthorizationException $aze){
-        } catch (AuthnException $ane) {
+        } catch (AuthorizationException $e){
+            //cas ou l'utilisateur n'est pas admin
+            //on ne fait rien
+        } catch (AuthnException $e) {
+            //cas ou l'utilisateur n'est pas connecte
+            //on retire le bouton de deconnexion et on lui propose de se connecter
             $logOut='';
             $connexion="<li><a href='index.php?action=connexion' class='button'>Connexion</a></li>
                  <li><a href='index.php?action=inscription' class='button'>Inscription</a></li>";
