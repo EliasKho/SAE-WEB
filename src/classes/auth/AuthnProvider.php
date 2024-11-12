@@ -11,7 +11,11 @@ class AuthnProvider
     public static function signin(string $username, string $password): void
     {
         $r = NRVRepository::getInstance();
-        $user = $r->getUserFromUsername($username); // recupere le mdp hashé dans la bd
+        try {
+            $user = $r->getUserFromMail($username); // test si l'utilisateur se connecte avec son mail
+        }catch (AuthnException $e){
+            $user = $r->getUserFromUsername($username); // test si l'utilisateur se connecte avec son username
+        }
         $userPass = $r->getPasswordFromUser($user);
 
         if (!password_verify($password, $userPass)) {
@@ -21,11 +25,12 @@ class AuthnProvider
         $_SESSION['user'] = serialize($user);
     }
 
-    public static function register(string $email, string $password)  // enregistre un nouvel utilisateur
+    public static function register(string $username, string $email, string $password)  // enregistre un nouvel utilisateur
     {
         $r = NRVRepository::getInstance();
         try {
             $user = $r->getUserFromMail($email);
+            $user = $r->getUserFromUsername($username);
         } catch (AuthnException $e) {
             $user = null;
         }
@@ -40,8 +45,8 @@ class AuthnProvider
 
         $password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
 
-//        $user = new User($email, $password);
-        $r->insertUser($user);
+        $user = new User($username, $email);
+        $user = $r->inscription($user, $password, User::$STANDARD);
 
         $_SESSION['user'] = serialize($user);
     }

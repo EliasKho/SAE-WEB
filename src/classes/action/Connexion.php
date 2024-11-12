@@ -19,7 +19,7 @@ class Connexion extends Action {
         $form = '<div class="container">
                     <h2>Connexion</h2>
                     <form action="?action=connexion" method="post">
-                        <input type="text" name="Username" placeholder="Nom d\'utilisateur" required>
+                        <input type="text" name="Username" placeholder="Nom d\'utilisateur/Email" required>
                         <input type="password" name="Password" placeholder="Mot de passe" required>
                         <button type="submit">Valider</button>
                     </form>

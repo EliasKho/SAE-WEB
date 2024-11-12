@@ -2,9 +2,11 @@
 
 namespace iutnc\nrv\action;
 
+use iutnc\nrv\exception\AuthnException;
 use iutnc\nrv\exception\CompteException;
 use iutnc\nrv\repository\NRVRepository;
 use iutnc\nrv\user\User;
+use iutnc\nrv\auth\AuthnProvider;
 
 class Inscription extends Action {
 
@@ -39,23 +41,15 @@ class Inscription extends Action {
 
     protected function executePost(): string
     {
-        $r = NRVRepository::getInstance();
+        $username = $_POST["username"];
+        $email = $_POST["email"];
+        $password = $_POST["password"];
 
-        $username = $_POST["username"] ?? '';
-        $email = $_POST["email"] ?? '';
-        $password = $_POST["password"] ?? '';
-
-        $s = '<div class="container">';
         try {
-            $user = new User($username,$email);
-            $resInscr = $r->inscription($user->__get("username"), $user->__get("email"), $password, User::$STANDARD);
-            $s .= $resInscr;
-        } catch (CompteException $e) {
-            $s .= $this->executeGet();
-            $erreur = addslashes($e->getMessage());
-            $s .= "<script>window.onload = ()=>{window.alert('$erreur');}</script>";
-            $s .= "<br>".$erreur;
+            AuthnProvider::register($username, $email, $password);
+        } catch (AuthnException $e) {
+            return "Erreur lors de l'authentification : ".$e->getMessage();
         }
-        return $s;
+        return "Inscription réussie";
     }
 }

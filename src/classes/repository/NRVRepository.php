@@ -85,6 +85,25 @@ class NRVRepository{
         return $user;
     }
 
+    public function getUserFromMail(string $email) : User{
+        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+        $request = $this->pdo->prepare("SELECT * FROM users WHERE email =?");
+        $request->bindParam(1, $email);
+        $request->execute();
+        $user = $request->fetch();
+        if ($user === false) {
+            throw new AuthnException("Aucun utilisateur trouvé");
+        }
+
+        $id = $user['idUser'];
+        $role = $user['role'];
+
+        $user = new User($user['username'], $user['email']);
+        $user->setId($id);
+        $user->setRole($role);
+        return $user;
+    }
+
     public function getPasswordFromUser(User $user) : string{
         $request = $this->pdo->prepare("SELECT password FROM users WHERE idUser = ?");
         $id = $user->id;
@@ -142,31 +161,19 @@ class NRVRepository{
         return $artistes;
     }
 
-    public function inscription($username, $email, $password, $role): String{
-        $stm = $this->pdo->prepare("SELECT*FROM users");
-        $stm->execute();
-        $s ="";
-        // vérification si l'utilisateur ou l'email existe déjà
-        while ($s = $stm->fetch(\PDO::FETCH_ASSOC)) {
-            if ($s['email'] === $email) {
-
-                return "Un utilisateur avec cet email existe déjà";
-            }
-            if ($s['username'] === $username) {
-                return "Un utilisateur avec ce nom d'utilisateur existe déjà";
-            }
-        }
-
-        $hashPassword = password_hash($password, PASSWORD_DEFAULT);
-
+    public function inscription(User $user, string $password, int $role):User{
+        $username = $user->username;
+        $email = $user->email;
         //Insertion des données
         $stm1 = $this->pdo->prepare("INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)");
         $stm1->bindParam(':username', $username, PDO::PARAM_STR);
         $stm1->bindParam(':email', $email, PDO::PARAM_STR);
-        $stm1->bindParam(':password', $hashPassword, PDO::PARAM_STR);
+        $stm1->bindParam(':password', $password, PDO::PARAM_STR);
         $stm1->bindParam(':role', $role, PDO::PARAM_STR);
         $stm1->execute();
 
-        return "Inscription réussie";
+        $user->setId($this->pdo->lastInsertId());
+        $user->setRole($role);
+        return $user;
     }
 }
