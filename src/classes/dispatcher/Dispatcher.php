@@ -96,7 +96,8 @@ class Dispatcher
                         <li><a href='index.php?action=preferences' class="button">Mes Préférences</a></li>
                         <li><a href='index.php?action=spectacles' class="button">Spectacles</a></li>
                         <li><a href='index.php?action=soiree' class="button">Soirées</a></li>
-                        <li><a href='index.php?action=add-spectacle' class="button">Ajouter Spectacle</a></li>  <!-- Ajouter le lien pour ajouter un spectacle -->
+                        <li><a href='index.php?action=add-spectacle' class="button">Ajouter Spectacle</a></li>
+                        <li><a href='index.php?action=add-soiree' class="button">Ajouter Soirée</a></li>
                         $adminMenu
                         $logOut
                     </ul>
