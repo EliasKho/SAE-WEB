@@ -25,7 +25,7 @@ class AuthnProvider
         $_SESSION['user'] = serialize($user);
     }
 
-    public static function register(string $username, string $email, string $password)  // enregistre un nouvel utilisateur
+    public static function register(string $username, string $email, string $password,int $role)  // enregistre un nouvel utilisateur
     {
         $r = NRVRepository::getInstance();
         try {
@@ -46,7 +46,7 @@ class AuthnProvider
         $password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
 
         $user = new User($username, $email);
-        $user = $r->inscription($user, $password, User::$STANDARD);
+        $user = $r->inscription($user, $password, $role);
 
         $_SESSION['user'] = serialize($user);
     }

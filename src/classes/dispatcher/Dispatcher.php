@@ -3,19 +3,19 @@
 namespace iutnc\nrv\dispatcher;
 
 use iutnc\nrv\action as ACT;
+use iutnc\nrv\auth\AuthnProvider;
+use iutnc\nrv\user\User;
 
-class Dispatcher{
+class Dispatcher
+{
     protected string $action;
-    public function __construct(){
-        if (!isset($_GET['action'])){
-            $this->action = 'default';
-        }
-        else {
-            $this->action = $_GET['action'];
-        }
+
+    public function __construct()
+    {
+        $this->action = $_GET['action'] ?? 'default';
     }
 
-    public function run() : void
+    public function run(): void
     {
         switch ($this->action) {
             case 'connexion':
@@ -36,6 +36,9 @@ class Dispatcher{
             case 'add-spectacle':
                 $act = new ACT\AjouterSpectacle();
                 break;
+            case 'creerStaff':
+                $act = new ACT\CreerStaff();
+                break;
             default:
                 $act = new ACT\DefaultAction();
                 break;
@@ -43,24 +46,37 @@ class Dispatcher{
         $this->renderPage($act());
     }
 
-    private function renderPage(string $html){
+    private function renderPage(string $html): void
+    {
+        // Vérifier si un administrateur est connecté
+        $adminMenu = '';
+        try {
+            $user = AuthnProvider::getSignedInUser();
+            if ($user->getRole() === User::$ADMIN) {
+                $adminMenu = "<li><a href='index.php?action=creerStaff' class='button'>Créer Staff</a></li>";
+            }
+        } catch (\Exception $e) {
+            // Aucun utilisateur connecté ou l'utilisateur n'est pas un admin
+        }
+
         $final = <<<FIN
         <!DOCTYPE html>
         <html lang='fr'>
         <meta charset='UTF-8'>
         <head>
-            <title>NRV</title>         
+            <title>NRV</title>
             <link rel="stylesheet" href="styles.css"> <!-- Inclure le CSS -->
         </head>
         <body>
             <header>
                 <h1>Bienvenue sur le site NRV</h1>
                 <nav>
-                    <ul>
+                    <ul id="ulmenu">
                         <li><a href='index.php?action=connexion' class="button">Connexion</a></li>
                         <li><a href='index.php?action=inscription' class="button">Inscription</a></li>
                         <li><a href='index.php?action=preferences' class="button">Mes Préférences</a></li>
                         <li><a href='index.php?action=festival' class="button">Voir Festival</a></li>
+                        $adminMenu
                     </ul>
                 </nav>
             </header>
@@ -70,7 +86,7 @@ class Dispatcher{
         </body>
         </html>
         FIN;
+
         echo $final;
     }
-
 }
