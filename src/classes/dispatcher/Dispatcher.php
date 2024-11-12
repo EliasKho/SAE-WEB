@@ -49,6 +49,9 @@ class Dispatcher
             case 'soiree':
                 $act = new ACT\Soiree();
                 break;
+            case 'AnnulerSpectacle':
+                $act = new ACT\AnnulerRetablirSpectacle();
+                break;
             default:
                 $act = new ACT\DefaultAction();
                 break;

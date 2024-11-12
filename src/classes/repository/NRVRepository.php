@@ -342,4 +342,14 @@ class NRVRepository{
         $stmt->execute();
 
     }
+
+    public function updateSpectacle(Spectacle $spectacle): void
+    {
+        $query = "UPDATE spectacle SET estAnnule = :estAnnule WHERE idSpectacle = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':estAnnule', $spectacle->estAnnule, \PDO::PARAM_BOOL);
+        $stmt->bindValue(':id', $spectacle->idSpectacle, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
 }
