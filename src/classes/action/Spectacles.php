@@ -5,7 +5,7 @@ namespace iutnc\nrv\action;
 use iutnc\nrv\render\SpectacleRender;
 use iutnc\nrv\repository\NRVRepository;
 
-class Festival extends Action {
+class Spectacles extends Action {
 
     protected function executeGet(): string {
         $r = NRVRepository::getInstance();
@@ -13,7 +13,7 @@ class Festival extends Action {
 //        var_dump($spectacles);
         $html = <<<FIN
         <h3>Tri :</h3>
-        <form method="post" action="?action=festival">
+        <form method="post" action="?action=spectacles">
             <label for="date">Date :</label>
             <input type="date" name="date" id="date">
             
@@ -41,7 +41,7 @@ class Festival extends Action {
     protected function executePost(): string{
         $html = <<<FIN
         <h3>Tri :</h3>
-        <form method="post" action="?action=festival">
+        <form method="post" action="?action=spectacles">
             <label for="date">Date :</label>
             <input type="date" name="date" id="date">
             

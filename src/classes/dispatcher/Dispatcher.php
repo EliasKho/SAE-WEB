@@ -31,8 +31,8 @@ class Dispatcher
             case 'preferences':
                 $act = new ACT\Preferences();
                 break;
-            case 'festival':
-                $act = new ACT\Festival();
+            case 'spectacles':
+                $act = new ACT\Spectacles();
                 break;
             case 'display-spectacle':
                 $act = new ACT\DisplaySpectacle();
@@ -81,7 +81,7 @@ class Dispatcher
         <meta charset='UTF-8'>
         <head>
             <title>NRV</title>
-            <link rel="stylesheet" href="styles.css"> <!-- Inclure le CSS -->
+            <link rel="stylesheet" href="styles.css">
         </head>
         <body>
             <header>
@@ -91,7 +91,8 @@ class Dispatcher
                         <li><a href='index.php?action=menu' class='button'>Accueil</a></li>
                         $connexion
                         <li><a href='index.php?action=preferences' class="button">Mes Préférences</a></li>
-                        <li><a href='index.php?action=festival' class="button">Voir Festival</a></li>
+                        <li><a href='index.php?action=spectacles' class="button">Spectacles</a></li>
+                        <li><a href="index.php?action=soiree"></a></li>
                         <li><a href='index.php?action=add-spectacle' class="button">Ajouter Spectacle</a></li>  <!-- Ajouter le lien pour ajouter un spectacle -->
                         $adminMenu
                         $logOut
