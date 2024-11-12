@@ -36,16 +36,19 @@ class SpectacleRender
             $user = AuthnProvider::getSignedInUser();
             $authz = new Authz($user);
             if ($authz->checkRole(User::$STAFF)) {
-                $btnAnnuler = "<li><a href='index.php?action=AnnulerSpectacle&idSpectacle=$id' class='button'>$buttonText</a></li>";
+                $btnAnnuler = "<a href='index.php?action=AnnulerSpectacle&idSpectacle=$id' class='button'>$buttonText</a>  ";
             }
         } catch (\Exception $e) {
             // Aucun utilisateur connecté ou l'utilisateur n'est pas un admin
         }
 
         return <<<FIN
-                 
-                    <p>{$btnAnnuler}</p>
-                <a href = "index.php?action=display-spectacle&id={$id}"><div class='spectacle'>
+                <br>
+                 <div class="button-group">
+                    <a href='index.php?action=preferences&idSpectacle=$id' class='button'>Ajouter à mes préférences</a>
+                    $btnAnnuler
+                 </div>  
+                <a href = "index.php?action=display-spectacle&id=$id"><div class='spectacle'>
                     <p>{$annuleLabel}</p>
                     <h2>{$titre}</h2>
                     <img alt="image du spectacle" src='{$image}'>

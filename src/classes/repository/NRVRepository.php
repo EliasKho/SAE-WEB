@@ -3,6 +3,7 @@
 namespace iutnc\nrv\repository;
 
 use iutnc\nrv\exception\AuthnException;
+use iutnc\nrv\festival\Soiree;
 use iutnc\nrv\festival\Spectacle;
 use iutnc\nrv\user\User;
 use PDO;
@@ -81,7 +82,7 @@ class NRVRepository{
                                             JOIN lieu on soiree.idLieu = lieu.idLieu
                                             WHERE soiree.dateSoiree = STR_TO_DATE(?, '%Y-%m-%d')
                                             AND spectacle.idStyle = ?
-                                            AND lieu.nomLieu = ?");
+                                            AND lieu.idLieu = ?");
                     $requete->bindParam(1, $date);
                     $requete->bindParam(2, $style);
                     $requete->bindParam(3, $lieu);
@@ -103,7 +104,7 @@ class NRVRepository{
                                             JOIN soiree on appartient.idSoiree = soiree.idSoiree
                                             JOIN lieu on soiree.idLieu = lieu.idLieu
                                             WHERE soiree.dateSoiree = STR_TO_DATE(?, '%Y-%m-%d')
-                                            AND lieu.nomLieu = ?");
+                                            AND lieu.idLieu = ?");
                     $requete->bindParam(1, $date);
                     $requete->bindParam(2, $lieu);
                 }
@@ -124,7 +125,7 @@ class NRVRepository{
                                             JOIN soiree on appartient.idSoiree = soiree.idSoiree
                                             JOIN lieu on soiree.idLieu = lieu.idLieu
                                             WHERE spectacle.idStyle = ?
-                                            AND lieu.nomLieu = ?");
+                                            AND lieu.idLieu = ?");
                     $requete->bindParam(1, $style);
                     $requete->bindParam(2, $lieu);
                 }
@@ -138,7 +139,7 @@ class NRVRepository{
                                             JOIN appartient on spectacle.idSpectacle = appartient.idSpectacle
                                             JOIN soiree on appartient.idSoiree = soiree.idSoiree
                                             JOIN lieu on soiree.idLieu = lieu.idLieu
-                                            WHERE lieu.nomLieu = ?");
+                                            WHERE lieu.idLieu = ?");
                     $requete->bindParam(1, $lieu);
                 }
             }
@@ -251,6 +252,17 @@ class NRVRepository{
         return $images;
     }
 
+    public function getImagesByLieu(int $idLieu){
+        $stmt = $this->pdo->prepare("SELECT * FROM image inner join imageLieu on imageLieu.idImage = image.idImage WHERE idLieu = ?");
+        $stmt->bindParam(1, $idLieu);
+        $stmt->execute();
+        $images = [];
+        while ($i = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $images[] = 'img/'.$i['chemin'];
+        }
+        return $images;
+    }
+
     public function getArtistesBySpectacle(int $id){
         $stmt = $this->pdo->prepare("SELECT * FROM artiste inner join jouer on jouer.idArtiste = artiste.idArtiste WHERE idSpectacle =?");
         $stmt->bindParam(1, $id);
@@ -304,6 +316,14 @@ class NRVRepository{
             $lieux[] = $l['nomLieu'];
         }
         return $lieux;
+    }
+
+    public function getNomLieu(int $id){
+        $stmt = $this->pdo->prepare("SELECT nomLieu FROM lieu WHERE idLieu = ?");
+        $stmt->bindParam(1, $id);
+        $stmt->execute();
+        $l = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $l['nomLieu'];
     }
 
     public function ajouterSpectacle (string $titre, string $horaire, int $duree, string $desc, int $style, array $images, string $video):Spectacle{
@@ -371,6 +391,56 @@ class NRVRepository{
         $stmt->bindParam(5, $tarif);
         $stmt->bindParam(6, $lieu);
         $stmt->execute();
+    }
+
+    public function getAllSoirees()
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM soiree");
+        $stmt->execute();
+        while ($s = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $nomSoiree = $s['nomSoiree'];
+            $temathique = $s['temathique'];
+            $dateSoiree = $s['dateSoiree'];
+            $horaireDebut = $s['horaireDebut'];
+            $idLieu = $s['idLieu'];
+
+            $soiree = new Soiree($nomSoiree, $temathique, $dateSoiree, $horaireDebut, $idLieu);
+            $soirees[] = $soiree;
+        }
+
+        return $soirees;
+    }
+
+    public function getSpectacleFromId(int $idSpectacle): ?Spectacle
+    {
+        $query = "SELECT * FROM spectacle INNER JOIN style ON spectacle.idStyle = style.idStyle WHERE idSpectacle = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['id' => $idSpectacle]);
+
+        $s = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if ($s) {
+            $id = $s['idSpectacle'];
+            $titre = $s['titre'];
+            $description = $s['description'];
+            $video = $s['video'];
+            $horaire = $s['horaireSpec'];
+            $duree = $s['dureeSpec'];
+            $style = $s['nomStyle'];
+
+            $images = $this->getImagesBySpectacle($id);
+            $artistes = $this->getArtistesBySpectacle($id);
+            $annule = $this->getAnnuleBySpectacle($id);
+
+            $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style, $annule);
+            $spectacle->setId($id);
+            $spectacle->setImages($images);
+            $spectacle->setArtistes($artistes);
+
+            return $spectacle;
+        }
+
+        return null;
     }
 
 }
