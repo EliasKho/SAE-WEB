@@ -61,6 +61,7 @@ class Dispatcher{
                         <li><a href='index.php?action=inscription' class="button">Inscription</a></li>
                         <li><a href='index.php?action=preferences' class="button">Mes Préférences</a></li>
                         <li><a href='index.php?action=festival' class="button">Voir Festival</a></li>
+                        <li><a href='index.php?action=add-spectacle' class="button">Ajouter Spectacle</a></li>  <!-- Ajouter le lien pour ajouter un spectacle -->
                     </ul>
                 </nav>
             </header>

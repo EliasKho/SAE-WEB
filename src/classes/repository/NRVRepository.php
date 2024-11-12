@@ -279,7 +279,7 @@ class NRVRepository{
         return $styles;
     }
 
-    public function ajouterSpectacle (string $titre, string $horaire, int $duree, string $desc, int $style, array $images, string $video){
+    public function ajouterSpectacle (string $titre, string $horaire, int $duree, string $desc, int $style, array $images, string $video):Spectacle{
         $stmt = $this->pdo->prepare("INSERT INTO spectacle (titre, description, video, horaireSpec, dureeSpec, idStyle) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->bindParam(1, $titre);
         $stmt->bindParam(2, $desc);
@@ -288,5 +288,41 @@ class NRVRepository{
         $stmt->bindParam(5, $duree);
         $stmt->bindParam(6, $style);
         $stmt->execute();
+        $idSpec = $this->pdo->lastInsertId();
+        $spectacle = new Spectacle($titre, $desc, $video, $horaire, $duree, $style);
+        $spectacle->setId($idSpec);
+        return $spectacle;
+    }
+
+    public function ajouterImage(string $chemin):int{
+        $stmt = $this->pdo->prepare("INSERT INTO image (chemin) VALUES (?)");
+        $stmt->bindParam(1, $chemin);
+        $stmt->execute();
+        return $this->pdo->lastInsertId();
+    }
+
+    public function lierSpectacleImage(int $idSpec, int $idImage){
+        $stmt = $this->pdo->prepare("INSERT INTO imageSpec (idSpectacle, idImage) VALUES (?, ?)");
+        $stmt->bindParam(1, $idSpec);
+        $stmt->bindParam(2, $idImage);
+        $stmt->execute();
+    }
+
+    public function getAllArtistes(){
+        $stmt = $this->pdo->prepare("SELECT * FROM artiste");
+        $stmt->execute();
+        $artistes = [];
+        while ($a = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $artistes[] = $a['nomArtiste'];
+        }
+        return $artistes;
+    }
+
+    public function lierSpectacleArtiste(int $idSpec, int $idArtiste){
+        $stmt = $this->pdo->prepare("INSERT INTO jouer (idSpectacle, idArtiste) VALUES (?, ?)");
+        $stmt->bindParam(1, $idSpec);
+        $stmt->bindParam(2, $idArtiste);
+        $stmt->execute();
+
     }
 }
