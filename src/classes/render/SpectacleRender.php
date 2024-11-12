@@ -3,6 +3,10 @@
 namespace iutnc\nrv\render;
 
 use iutnc\nrv\festival\Spectacle;
+use iutnc\nrv\auth\AuthnProvider;
+use iutnc\nrv\auth\Authz;
+use iutnc\nrv\user\User;
+use iutnc\nrv\exception\AuthnException;
 
 class SpectacleRender
 {
@@ -21,13 +25,27 @@ class SpectacleRender
         $horaire = filter_var($this->spectacle->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         $estAnnule = filter_var($this->spectacle->estAnnule, FILTER_SANITIZE_SPECIAL_CHARS);
+        $btnAnnuler = "";
 
         // Affichage du label "ANNULÉ" si le spectacle est annulé
         $annuleLabel = $estAnnule ? "<div class='annule'>ANNULÉ</div>" : "";
 
+        $buttonText = $estAnnule ? "Rétablir" : "Annuler";
+
+        try {
+            $user = AuthnProvider::getSignedInUser();
+            $authz = new Authz($user);
+            if ($authz->checkRole(User::$STAFF)) {
+                $btnAnnuler = "<li><a href='index.php?action=AnnulerSpectacle&idSpectacle=$id' class='button'>$buttonText</a></li>";
+            }
+        } catch (\Exception $e) {
+            // Aucun utilisateur connecté ou l'utilisateur n'est pas un admin
+        }
+
         return <<<FIN
                 <a href = "index.php?action=display-spectacle&id={$id}"><div class='spectacle'>
-                    {$annuleLabel}
+                    <p>{$annuleLabel}</p> 
+                    <p>{$btnAnnuler}</p>
                     <h2>{$titre}</h2>
                     <img alt="image du spectacle" src='{$image}'>
                     <p>{$horaire}</p>

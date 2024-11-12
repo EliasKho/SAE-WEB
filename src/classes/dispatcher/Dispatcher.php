@@ -37,6 +37,9 @@ class Dispatcher
             case 'display-spectacle':
                 $act = new ACT\DisplaySpectacle();
                 break;
+            case 'add-soiree':
+                $act = new ACT\AjouterSoiree();
+                break;
             case 'add-spectacle':
                 $act = new ACT\AjouterSpectacle();
                 break;
@@ -48,6 +51,9 @@ class Dispatcher
                 break;
             case 'soiree':
                 $act = new ACT\Soiree();
+                break;
+            case 'AnnulerSpectacle':
+                $act = new ACT\AnnulerRetablirSpectacle();
                 break;
             default:
                 $act = new ACT\DefaultAction();
@@ -96,7 +102,8 @@ class Dispatcher
                         <li><a href='index.php?action=preferences' class="button">Mes Préférences</a></li>
                         <li><a href='index.php?action=spectacles' class="button">Spectacles</a></li>
                         <li><a href='index.php?action=soiree' class="button">Soirées</a></li>
-                        <li><a href='index.php?action=add-spectacle' class="button">Ajouter Spectacle</a></li>  <!-- Ajouter le lien pour ajouter un spectacle -->
+                        <li><a href='index.php?action=add-spectacle' class="button">Ajouter Spectacle</a></li>
+                        <li><a href='index.php?action=add-soiree' class="button">Ajouter Soirée</a></li>
                         $adminMenu
                         $logOut
                     </ul>

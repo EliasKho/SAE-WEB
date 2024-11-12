@@ -54,4 +54,9 @@ class Spectacle
         $this->estAnnule = true;
     }
 
+    public function retablir(){
+        $this->estAnnule = false;
+    }
+
+
 }
