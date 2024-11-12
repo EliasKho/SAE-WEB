@@ -33,6 +33,9 @@ class Dispatcher{
             case 'display-spectacle':
                 $act = new ACT\DisplaySpectacle();
                 break;
+            case 'add-spectacle':
+                $act = new ACT\AjouterSpectacle();
+                break;
             default:
                 $act = new ACT\DefaultAction();
                 break;

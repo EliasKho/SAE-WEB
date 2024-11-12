@@ -176,4 +176,25 @@ class NRVRepository{
         $user->setRole($role);
         return $user;
     }
+
+    public function getAllStyles(){
+        $stmt = $this->pdo->prepare("SELECT * FROM style");
+        $stmt->execute();
+        $styles = [];
+        while ($s = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $styles[] = $s['nomStyle'];
+        }
+        return $styles;
+    }
+
+    public function ajouterSpectacle (string $titre, string $horaire, int $duree, string $desc, int $style, array $images, string $video){
+        $stmt = $this->pdo->prepare("INSERT INTO spectacle (titre, description, video, horaireSpec, dureeSpec, idStyle) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bindParam(1, $titre);
+        $stmt->bindParam(2, $desc);
+        $stmt->bindParam(3, $video);
+        $stmt->bindParam(4, $horaire);
+        $stmt->bindParam(5, $duree);
+        $stmt->bindParam(6, $style);
+        $stmt->execute();
+    }
 }
