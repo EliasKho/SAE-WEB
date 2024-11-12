@@ -26,6 +26,7 @@ class SpectacleRender
         $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         $estAnnule = filter_var($this->spectacle->estAnnule, FILTER_SANITIZE_SPECIAL_CHARS);
         $btnAnnuler = "";
+        $btnModifSpec = "";
 
         // Affichage du label "ANNULÉ" si le spectacle est annulé
         $annuleLabel = $estAnnule ? "<div class='annule'>ANNULÉ</div>" : "";
@@ -37,6 +38,7 @@ class SpectacleRender
             $authz = new Authz($user);
             if ($authz->checkRole(User::$STAFF)) {
                 $btnAnnuler = "<a href='index.php?action=AnnulerSpectacle&idSpectacle=$id' class='button'>$buttonText</a>  ";
+                $btnModifSpec = "<a href='index.php?action=ModifSpectacle&idSpectacle=$id' class='button'>Modifier le spectacle</a>  ";
             }
         } catch (\Exception $e) {
             // Aucun utilisateur connecté ou l'utilisateur n'est pas un admin
@@ -47,6 +49,7 @@ class SpectacleRender
                  <div class="button-group">
                     <a href='index.php?action=preferences&action2=ajouter&idSpectacle=$id' class='button'>Ajouter à mes préférences</a>
                     $btnAnnuler
+                    $btnModifSpec
                  </div>  
                 <a href = "index.php?action=display-spectacle&id=$id"><div class='spectacle'>
                     <p>{$annuleLabel}</p>

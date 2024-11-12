@@ -5,17 +5,17 @@ namespace iutnc\nrv\action;
 use iutnc\nrv\render\SpectacleRender;
 use iutnc\nrv\repository\NRVRepository;
 
-class Spectacles extends Action {
-
+class DisplayAllSoirees extends Action
+{
     protected function executeGet(): string {
         $r = NRVRepository::getInstance();
-        $spectacles = $r->getAllSpectacles();
+        $soirees = $r->getAllSoirees();
 //        var_dump($spectacles);
         $styles=$r->getAllStyles();
         var_dump($styles);
         list($html, $style, $lieu) = $this->form($r, $styles);
-        foreach ($spectacles as $spectacle) {
-            $render = new SpectacleRender($spectacle);
+        foreach ($soirees as $soiree) {
+            $render = new SpectacleRender($soiree);
             $html .= $render->renderCompact();
         }
         return $html;

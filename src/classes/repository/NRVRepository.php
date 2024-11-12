@@ -3,6 +3,7 @@
 namespace iutnc\nrv\repository;
 
 use iutnc\nrv\exception\AuthnException;
+use iutnc\nrv\festival\Soiree;
 use iutnc\nrv\festival\Spectacle;
 use iutnc\nrv\user\User;
 use PDO;
@@ -72,77 +73,45 @@ class NRVRepository{
         if ($date == "" && $style == "" && $lieu == "") {
             return $this->getAllSpectacles();
         }
+
+        $query = "SELECT * FROM spectacle 
+                                            JOIN appartient on spectacle.idSpectacle = appartient.idSpectacle
+                                            JOIN soiree on appartient.idSoiree = soiree.idSoiree
+                                            JOIN lieu on soiree.idLieu = lieu.idLieu";
+        $nbParams = 0;
         if ($date != "") {
-            if ($style!= ""){
-                if ($lieu!= ""){
-                    $requete = $this->pdo->prepare("SELECT * FROM spectacle 
-                                            JOIN appartient on spectacle.idSpectacle = appartient.idSpectacle
-                                            JOIN soiree on appartient.idSoiree = soiree.idSoiree
-                                            JOIN lieu on soiree.idLieu = lieu.idLieu
-                                            WHERE soiree.dateSoiree = STR_TO_DATE(?, '%Y-%m-%d')
-                                            AND spectacle.idStyle = ?
-                                            AND lieu.nomLieu = ?");
-                    $requete->bindParam(1, $date);
-                    $requete->bindParam(2, $style);
-                    $requete->bindParam(3, $lieu);
-                }
-                else {
-                    $requete = $this->pdo->prepare("SELECT * FROM spectacle 
-                                            JOIN appartient on spectacle.idSpectacle = appartient.idSpectacle
-                                            JOIN soiree on appartient.idSoiree = soiree.idSoiree
-                                            WHERE soiree.dateSoiree = STR_TO_DATE(?, '%Y-%m-%d')
-                                            AND spectacle.idStyle = ?");
-                    $requete->bindParam(1, $date);
-                    $requete->bindParam(2, $style);
-                }
-            }
-            else {
-                if ($lieu!= ""){
-                    $requete = $this->pdo->prepare("SELECT * FROM spectacle 
-                                            JOIN appartient on spectacle.idSpectacle = appartient.idSpectacle
-                                            JOIN soiree on appartient.idSoiree = soiree.idSoiree
-                                            JOIN lieu on soiree.idLieu = lieu.idLieu
-                                            WHERE soiree.dateSoiree = STR_TO_DATE(?, '%Y-%m-%d')
-                                            AND lieu.nomLieu = ?");
-                    $requete->bindParam(1, $date);
-                    $requete->bindParam(2, $lieu);
-                }
-                else {
-                    $requete = $this->pdo->prepare("SELECT * FROM spectacle 
-                                            JOIN appartient on spectacle.idSpectacle = appartient.idSpectacle
-                                            JOIN soiree on appartient.idSoiree = soiree.idSoiree
-                                            WHERE soiree.dateSoiree = STR_TO_DATE(?, '%Y-%m-%d')");
-                    $requete->bindParam(1, $date);
-                }
-            }
-        } else {
-            if ($style!= ""){
-                if ($lieu!= ""){
-                    $requete = $this->pdo->prepare("SELECT * FROM spectacle 
-                                            JOIN style on spectacle.idStyle = style.idStyle
-                                            JOIN appartient on spectacle.idSpectacle = appartient.idSpectacle
-                                            JOIN soiree on appartient.idSoiree = soiree.idSoiree
-                                            JOIN lieu on soiree.idLieu = lieu.idLieu
-                                            WHERE spectacle.idStyle = ?
-                                            AND lieu.nomLieu = ?");
-                    $requete->bindParam(1, $style);
-                    $requete->bindParam(2, $lieu);
-                }
-                else {
-                    $requete = $this->pdo->prepare("SELECT * FROM spectacle WHERE idStyle = ?");
-                    $requete->bindParam(1, $style);
-                }
-            } else {
-                if ($lieu!= ""){
-                    $requete = $this->pdo->prepare("SELECT * FROM spectacle 
-                                            JOIN appartient on spectacle.idSpectacle = appartient.idSpectacle
-                                            JOIN soiree on appartient.idSoiree = soiree.idSoiree
-                                            JOIN lieu on soiree.idLieu = lieu.idLieu
-                                            WHERE lieu.nomLieu = ?");
-                    $requete->bindParam(1, $lieu);
-                }
-            }
+            $query .= " WHERE soiree.dateSoiree = STR_TO_DATE(?, '%Y-%m-%d')";
+            $nbParams++;
         }
+        else {
+            $query .= " WHERE 1=1";
+        }
+
+        if ($style!= "") {
+            $query.= " AND spectacle.idStyle =?";
+            $nbParams++;
+        }
+
+        if ($lieu!= "") {
+            $query.= " AND lieu.idLieu =?";
+            $nbParams++;
+        }
+
+        $requete = $this->pdo->prepare($query);
+
+        if ($lieu != "" & $nbParams > 0) {
+            $requete->bindParam($nbParams, $lieu);
+            $nbParams--;
+        }
+        if ($style != "" & $nbParams > 0) {
+            $requete->bindParam($nbParams, $style);
+            $nbParams--;
+        }
+        if ($date != "" & $nbParams > 0) {
+            $requete->bindParam($nbParams, $date);
+        }
+
+
         $requete->execute();
         $spectacles = [];
         while ($s = $requete->fetch(\PDO::FETCH_ASSOC)) {
@@ -251,6 +220,17 @@ class NRVRepository{
         return $images;
     }
 
+    public function getImagesByLieu(int $idLieu){
+        $stmt = $this->pdo->prepare("SELECT * FROM image inner join imageLieu on imageLieu.idImage = image.idImage WHERE idLieu = ?");
+        $stmt->bindParam(1, $idLieu);
+        $stmt->execute();
+        $images = [];
+        while ($i = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $images[] = 'img/'.$i['chemin'];
+        }
+        return $images;
+    }
+
     public function getArtistesBySpectacle(int $id){
         $stmt = $this->pdo->prepare("SELECT * FROM artiste inner join jouer on jouer.idArtiste = artiste.idArtiste WHERE idSpectacle =?");
         $stmt->bindParam(1, $id);
@@ -306,6 +286,14 @@ class NRVRepository{
         return $lieux;
     }
 
+    public function getNomLieu(int $id){
+        $stmt = $this->pdo->prepare("SELECT nomLieu FROM lieu WHERE idLieu = ?");
+        $stmt->bindParam(1, $id);
+        $stmt->execute();
+        $l = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $l['nomLieu'];
+    }
+
     public function ajouterSpectacle (string $titre, string $horaire, int $duree, string $desc, int $style, array $images, string $video):Spectacle{
         $stmt = $this->pdo->prepare("INSERT INTO spectacle (titre, description, video, horaireSpec, dureeSpec, idStyle) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->bindParam(1, $titre);
@@ -353,13 +341,42 @@ class NRVRepository{
 
     }
 
-    public function updateSpectacle(Spectacle $spectacle): void
+    public function updateEtatSpectacle(Spectacle $spectacle): void
     {
         $query = "UPDATE spectacle SET estAnnule = :estAnnule WHERE idSpectacle = :id";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':estAnnule', $spectacle->estAnnule, \PDO::PARAM_BOOL);
         $stmt->bindValue(':id', $spectacle->idSpectacle, \PDO::PARAM_INT);
         $stmt->execute();
+    }
+
+    public function ajouterSoiree(string $titre, string $thematique, string $date, string $horaire, float $tarif, int $lieu){
+        $stmt = $this->pdo->prepare("INSERT INTO soiree (nomSoiree, thematique, dateSoiree, horaireDebut, tarif, idLieu) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bindParam(1, $titre);
+        $stmt->bindParam(2, $thematique);
+        $stmt->bindParam(3, $date);
+        $stmt->bindParam(4, $horaire);
+        $stmt->bindParam(5, $tarif);
+        $stmt->bindParam(6, $lieu);
+        $stmt->execute();
+    }
+
+    public function getAllSoirees()
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM soiree");
+        $stmt->execute();
+        while ($s = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $nomSoiree = $s['nomSoiree'];
+            $temathique = $s['temathique'];
+            $dateSoiree = $s['dateSoiree'];
+            $horaireDebut = $s['horaireDebut'];
+            $idLieu = $s['idLieu'];
+
+            $soiree = new Soiree($nomSoiree, $temathique, $dateSoiree, $horaireDebut, $idLieu);
+            $soirees[] = $soiree;
+        }
+
+        return $soirees;
     }
 
     public function getSpectacleFromId(int $idSpectacle): ?Spectacle
@@ -393,6 +410,66 @@ class NRVRepository{
 
         return null;
     }
+
+    public function updateSpectacle(int $id, string $titre, string $horaire, int $duree, string $description, int $style, array $images, string $video)
+    {
+        // Mise à jour des informations principales du spectacle
+        $stmt = $this->pdo->prepare("UPDATE spectacle SET titre = ?, description = ?, video = ?, horaireSpec = ?, dureeSpec = ?, idStyle = ? WHERE idSpectacle = ?");
+        $stmt->bindParam(1, $titre);
+        $stmt->bindParam(2, $description);
+        $stmt->bindParam(3, $video);
+        $stmt->bindParam(4, $horaire);
+        $stmt->bindParam(5, $duree);
+        $stmt->bindParam(6, $style);
+        $stmt->bindParam(7, $id);
+        $stmt->execute();
+
+        $nouvelleImage = array_filter($images['name'], fn($name) => !empty($name));
+
+        if (!empty($nouvelleImage)) {
+            // Suppression des anciennes associations avec les images et artistes (si nécessaire)
+            $this->deleteSpectacleImages($id);
+
+            // Ajout des nouvelles images
+            foreach ($images['name'] as $index => $nom) {
+                if (!empty($nom)) {
+                    $tmpName = $images['tmp_name'][$index];
+                    $extension = pathinfo($nom, PATHINFO_EXTENSION);
+                    $nouveauNom = bin2hex(random_bytes(10)) . '.' . $extension;
+                    move_uploaded_file($tmpName, "img/" . $nouveauNom);
+
+                    // Ajout de l'image dans la base de données
+                    $idImage = $this->ajouterImage($nouveauNom);
+                    $this->lierSpectacleImage($id, $idImage);
+                }
+            }
+        }
+    }
+
+    public function deleteSpectacleImages(int $idSpectacle)
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM imageSpec WHERE idSpectacle = ?");
+        $stmt->bindParam(1, $idSpectacle);
+        $stmt->execute();
+    }
+
+    public function deleteSpectacleArtistes(int $idSpectacle)
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM jouer WHERE idSpectacle = ?");
+        $stmt->bindParam(1, $idSpectacle);
+        $stmt->execute();
+    }
+
+
+    public function getArtisteIdByName(string $nomArtiste): ?int
+    {
+        $stmt = $this->pdo->prepare("SELECT idArtiste FROM ARTISTE WHERE nomArtiste = ?");
+        $stmt->execute([$nomArtiste]);
+        $result = $stmt->fetchColumn();
+
+        return $result ? (int) $result : null;
+    }
+
 
 
 }

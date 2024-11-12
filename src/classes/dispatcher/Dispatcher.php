@@ -55,6 +55,9 @@ class Dispatcher
             case 'AnnulerSpectacle':
                 $act = new ACT\AnnulerRetablirSpectacle();
                 break;
+            case 'ModifSpectacle':
+                $act = new ACT\ModifierSpectacle();
+                break;
             default:
                 $act = new ACT\DefaultAction();
                 break;

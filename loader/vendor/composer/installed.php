@@ -3,7 +3,7 @@
         'name' => 'iutnc/nrv',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '46eea6cc18b14c4f26a6323d8bf2d6d6af56e662',
+        'reference' => '5f22cef01238ea496773ae1518ede37129c804e2',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'iutnc/nrv' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '46eea6cc18b14c4f26a6323d8bf2d6d6af56e662',
+            'reference' => '5f22cef01238ea496773ae1518ede37129c804e2',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
