@@ -3,36 +3,43 @@
 namespace iutnc\nrv\action;
 
 use iutnc\nrv\festival\Spectacle;
+use function Sodium\add;
 
 class Preferences extends Action {
 
     protected function executeGet(): string
     {
         $res = "<h1>Préférences</h1><br>";
-        $res .= "<ul>";
-        foreach ($_SESSION['preferences'] as $preference) {
-            $res .= "<li>" . $preference . "</li>";
+        if (!isset($_COOKIE["preferences"])) {
+            $res .= "<h3>Pas encore de préférences</h3>";
+        } else {
+            $preferences = unserialize($_COOKIE["preferences"]);
+            $res .= "<ul>";
+            foreach ($preferences as $pref) {
+                $res .= "<li>" . $pref . "</li>";
+            }
+            $res .= "</ul>";
         }
-        $res .= "</ul>";
         return $res;
     }
 
+
+
+
     protected function executePost(): string
     {
-//        Créer un nouveau spectacle
-        $titre = $_POST['titre'];
-        $description = $_POST['description'];
-        $video = $_POST['video'];
-        $horaireSpec = $_POST['horaireSpec'];
-        $dureeSpec = $_POST['dureeSpec'];
-        $style = $_POST['style'];
-        $spectacle = new Spectacle($titre, $description, $video, $horaireSpec, $dureeSpec, $style);
-        $spectacle->setImages($_POST['images']);
-        $spectacle->setArtistes($_POST['artistes']);
-//        Si l'utilisateur n'est pas connecté, ajouter le spectacle dans les préférences en Session
-        if (!isset($_SESSION['user'])) {
-            $_SESSION['preferences'][] = $spectacle;
+        if (!isset($_COOKIE['preferences']) || !is_array(@unserialize($_COOKIE['preferences']))) {
+            $array = [];
+        } else {
+            $array = unserialize($_COOKIE['preferences']);
         }
+
+        $array[] = $_POST["id-spectacle"];
+        $serializedArray = serialize($array);
+
+        //creation d un cookie d un mois, pour la duree de tout le festival
+        setcookie('preferences', $serializedArray, time() + 60 * 60 * 24 * 30);
+
         return $this->executeGet();
     }
 }

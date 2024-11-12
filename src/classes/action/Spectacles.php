@@ -19,7 +19,7 @@ class Spectacles extends Action {
             
             <label for="style">Style :</label>
             <select name="style" id="style">
-                <option value="" disabled selected>Selectionnez un style</option>
+                <option value="" selected>Selectionnez un style</option>
                 <option value="1">Rock</option>
                 <option value="2">Blues</option>
                 <option value="3">Jazz</option>
@@ -39,26 +39,47 @@ class Spectacles extends Action {
     }
 
     protected function executePost(): string{
+        $r = NRVRepository::getInstance();
+        $styles=$r->getAllStyles();
+        $lieux=$r->getAllLieux();
         $html = <<<FIN
         <h3>Tri :</h3>
         <form method="post" action="?action=spectacles">
             <label for="date">Date :</label>
             <input type="date" name="date" id="date">
-            
             <label for="style">Style :</label>
             <select name="style" id="style">
-                <option value="" disabled selected>Selectionnez un style</option>
-                <option value="1">Rock</option>
-                <option value="2">Blues</option>
-                <option value="3">Jazz</option>
-                <option value="4">Metal</option>
-                <option value="5">Pop</option>
+                <option value="" selected>Selectionnez un style</option>
+        FIN;
+        foreach ($styles as $style) {
+            $html .= "<option value='{$style->idStyle}'>{$style->nomStyle}</option>";
+        }
+        $html.=<<<FIN
             </select>
             <label for="lieu">Lieu :</label>
-            <input type="text" name="lieu" id="lieu">    
+            <select name="lieu" id="lieu">
+                <option value="" selected>Selectionnez un lieu</option>
+        FIN;
+        foreach ($lieux as $lieu) {
+            $html .= "<option value='{$lieu->idLieu}'>{$lieu->nomLieu}</option>";
+        }
+        $html.=<<<FIN
+            </select>
             <input type="submit" value="Trier">
         </form>
         FIN;
+
+//                <option value="1">Rock</option>
+//                <option value="2">Blues</option>
+//                <option value="3">Jazz</option>
+//                <option value="4">Metal</option>
+//                <option value="5">Pop</option>
+//            </select>
+//            <label for="lieu">Lieu :</label>
+//            <input type="text" name="lieu" id="lieu">
+//            <input type="submit" value="Trier">
+//        </form>
+//        FIN;
         $r = NRVRepository::getInstance();
         if (!isset($_POST['date']) ) {
             $date = "";

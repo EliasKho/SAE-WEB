@@ -296,6 +296,16 @@ class NRVRepository{
         return $styles;
     }
 
+    public function getAllLieux(){
+        $stmt = $this->pdo->prepare("SELECT * FROM lieu");
+        $stmt->execute();
+        $lieux = [];
+        while ($l = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $lieux[] = $l['nomLieu'];
+        }
+        return $lieux;
+    }
+
     public function ajouterSpectacle (string $titre, string $horaire, int $duree, string $desc, int $style, array $images, string $video):Spectacle{
         $stmt = $this->pdo->prepare("INSERT INTO spectacle (titre, description, video, horaireSpec, dureeSpec, idStyle) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->bindParam(1, $titre);
