@@ -34,11 +34,13 @@ class Preferences extends Action {
             $array = unserialize($_COOKIE['preferences']);
         }
 
-        $array[] = $_POST["id-spectacle"];
+        $array[] = $_POST["idSpectacle"];
         $serializedArray = serialize($array);
 
         //creation d un cookie d un mois, pour la duree de tout le festival
         setcookie('preferences', $serializedArray, time() + 60 * 60 * 24 * 30);
+
+        echo $_COOKIE['preferences'];
 
         return $this->executeGet();
     }
