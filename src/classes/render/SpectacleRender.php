@@ -43,9 +43,10 @@ class SpectacleRender
         }
 
         return <<<FIN
-                <a href = "index.php?action=display-spectacle&id={$id}"><div class='spectacle'>
-                    <p>{$annuleLabel}</p> 
+                 
                     <p>{$btnAnnuler}</p>
+                <a href = "index.php?action=display-spectacle&id={$id}"><div class='spectacle'>
+                    <p>{$annuleLabel}</p>
                     <h2>{$titre}</h2>
                     <img alt="image du spectacle" src='{$image}'>
                     <p>{$horaire}</p>
