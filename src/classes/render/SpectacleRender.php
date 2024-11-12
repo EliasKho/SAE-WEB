@@ -15,14 +15,17 @@ class SpectacleRender
 
     public function renderCompact(): string
     {
-        $id=$this->spectacle->idSpectacle;
-        $image = $this->spectacle->images[0];
+        $id=filter_var($this->spectacle->idSpectacle, FILTER_SANITIZE_NUMBER_INT);
+        $image = filter_var($this->spectacle->images[0], FILTER_SANITIZE_URL);
+        $titre = filter_var($this->spectacle->titre, FILTER_SANITIZE_SPECIAL_CHARS);
+        $horaire = filter_var($this->spectacle->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
+        $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         return <<<FIN
                 <a href = "index.php?action=display-spectacle&id={$id}"><div class='spectacle'>
-                    <h2>{$this->spectacle->titre}</h2>
+                    <h2>{$titre}</h2>
                     <img alt="image du spectacle" src='{$image}'>
-                    <p>{$this->spectacle->horaireSpec}</p>
-                    <p>{$this->spectacle->dureeSpec}</p>
+                    <p>{$horaire}</p>
+                    <p>{$duree}</p>
                 </div></a>
                 FIN;
     }
@@ -33,23 +36,30 @@ class SpectacleRender
 
         $images = '';
         foreach ($this->spectacle->images as $image) {
+            $image = filter_var($image, FILTER_SANITIZE_URL);
             $images .= "<img alt='image du spectacle' src='{$image}'>";
         }
         $artistes = '';
         foreach ($this->spectacle->artistes as $artiste) {
+            $artiste = filter_var($artiste, FILTER_SANITIZE_SPECIAL_CHARS);
             $artistes .= "<p>{$artiste}</p>";
         }
-        $video = "<iframe width='560' height='315' src='{$this->spectacle->video}' title='YouTube video player' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' referrerpolicy='strict-origin-when-cross-origin' allowfullscreen></iframe>";
-//            "<video controls><source src='{$this->spectacle->video}' type='video/mp4'></video>";
+        $vid = filter_var($this->spectacle->video, FILTER_SANITIZE_URL);
+        $video = "<iframe width='560' height='315' src='{$vid}' title='YouTube video player' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' referrerpolicy='strict-origin-when-cross-origin' allowfullscreen></iframe>";
+        $titre = filter_var($this->spectacle->titre, FILTER_SANITIZE_SPECIAL_CHARS);
+        $description = filter_var($this->spectacle->description, FILTER_SANITIZE_SPECIAL_CHARS);
+        $style = filter_var($this->spectacle->style, FILTER_SANITIZE_SPECIAL_CHARS);
+        $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
+        $horaire = filter_var($this->spectacle->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         return <<<FIN
                 <div class='spectacle'>
-                    <h2>{$this->spectacle->titre}</h2>
+                    <h2>{$titre}</h2>
                     <h3>Artistes : </h3>
                     <p>{$artistes}</br></p>
-                    <p>{$this->spectacle->description}</p>
-                    <p>{$this->spectacle->style}</p>
-                    <p>{$this->spectacle->dureeSpec}</p>
-                    <p>{$this->spectacle->horaireSpec}</p>
+                    <p>{$description}</p>
+                    <p>{$style}</p>
+                    <p>{$duree}</p>
+                    <p>{$horaire}</p>
                     <p>{$video}</p>
                     <p>{$images}</p>
                 </div>
