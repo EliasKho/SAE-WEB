@@ -17,7 +17,13 @@ class DisplaySpectacle extends Action{
         return $render->renderFull();
     }
 
-    protected function executePost(): string{
+    protected function executePost(): string {
+        if (isset($_POST['annuler_spectacle']) && isset($_POST['idSpectacle'])) {
+            $idSpectacle = $_POST['idSpectacle'];
+            $r = NRVRepository::getInstance();
+            $r->annulerSpectacle($idSpectacle);
+            return 'Spectacle annulé avec succès.';
+        }
         return $this->executeGet();
     }
 }

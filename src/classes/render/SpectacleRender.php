@@ -20,8 +20,14 @@ class SpectacleRender
         $titre = filter_var($this->spectacle->titre, FILTER_SANITIZE_SPECIAL_CHARS);
         $horaire = filter_var($this->spectacle->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
+        $estAnnule = filter_var($this->spectacle->estAnnule, FILTER_SANITIZE_SPECIAL_CHARS);
+
+        // Affichage du label "ANNULÉ" si le spectacle est annulé
+        $annuleLabel = $estAnnule ? "<div class='annule'>ANNULÉ</div>" : "";
+
         return <<<FIN
                 <a href = "index.php?action=display-spectacle&id={$id}"><div class='spectacle'>
+                    {$annuleLabel}
                     <h2>{$titre}</h2>
                     <img alt="image du spectacle" src='{$image}'>
                     <p>{$horaire}</p>
@@ -51,8 +57,14 @@ class SpectacleRender
         $style = filter_var($this->spectacle->style, FILTER_SANITIZE_SPECIAL_CHARS);
         $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         $horaire = filter_var($this->spectacle->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
+        $estAnnule = filter_var($this->spectacle->estAnnule, FILTER_VALIDATE_BOOLEAN);
+
+        // Affichage du label "ANNULÉ" si le spectacle est annulé
+        $annuleLabel = $estAnnule ? "<div class='annule'>ANNULÉ</div>" : "";
+
         return <<<FIN
                 <div class='spectacle'>
+                    {$annuleLabel}
                     <h2>{$titre}</h2>
                     <h3>Artistes : </h3>
                     <p>{$artistes}</br></p>
