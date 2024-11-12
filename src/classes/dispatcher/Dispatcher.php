@@ -46,6 +46,9 @@ class Dispatcher
             case 'deconnexion':
                 $act = new ACT\Deconnexion();
                 break;
+            case 'soiree':
+                $act = new ACT\Soiree();
+                break;
             default:
                 $act = new ACT\DefaultAction();
                 break;
@@ -92,7 +95,7 @@ class Dispatcher
                         $connexion
                         <li><a href='index.php?action=preferences' class="button">Mes Préférences</a></li>
                         <li><a href='index.php?action=spectacles' class="button">Spectacles</a></li>
-                        <li><a href="index.php?action=soiree"></a></li>
+                        <li><a href='index.php?action=soiree' class="button">Soirées</a></li>
                         <li><a href='index.php?action=add-spectacle' class="button">Ajouter Spectacle</a></li>  <!-- Ajouter le lien pour ajouter un spectacle -->
                         $adminMenu
                         $logOut
