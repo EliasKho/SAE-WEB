@@ -26,6 +26,8 @@ class Festival extends Action {
                 <option value="4">Metal</option>
                 <option value="5">Pop</option>
             </select>
+            <label for="lieu">Lieu :</label>
+            <input type="text" name="lieu" id="lieu">    
             <input type="submit" value="Trier">
         </form>
         FIN;
@@ -58,9 +60,24 @@ class Festival extends Action {
         </form>
         FIN;
         $r = NRVRepository::getInstance();
-        $spectacles = $r->getSpectaclesByTri($_POST['date'], $_POST['style'], $_POST['lieu']);
+        if (!isset($_POST['date']) ) {
+            $date = "";
+        } else {
+            $date = $_POST['date'];
+        }
+        if (!isset($_POST['style']) ) {
+            $style = "";
+        } else {
+            $style = $_POST['style'];
+        }
+        if (!isset($_POST['lieu']) ) {
+            $lieu = "";
+        } else {
+            $lieu = $_POST['lieu'];
+        }
+        $spectacles = $r->getSpectaclesByTri($date, $style, $lieu);
         if ($spectacles == null) {
-            $html .= "<p>Aucun spectacle trouvé à cette date.</p>";
+            $html .= "<p>Aucun spectacle trouvé.</p>";
         }
         else {
             foreach ($spectacles as $spectacle) {
