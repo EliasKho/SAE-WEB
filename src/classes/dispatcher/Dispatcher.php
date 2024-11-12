@@ -54,7 +54,7 @@ class Dispatcher
         try {
             $user = AuthnProvider::getSignedInUser();
             $authz = new Authz($user);
-            if ($authz->checkRole(3)) {
+            if ($authz->checkRole(User::$ADMIN)) {
                 $adminMenu = "<li><a href='index.php?action=creerStaff' class='button'>Créer Staff</a></li>";
             }
         } catch (\Exception $e) {
