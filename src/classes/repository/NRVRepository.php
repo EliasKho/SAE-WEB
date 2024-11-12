@@ -55,8 +55,9 @@ class NRVRepository{
 
             $images = $this->getImagesBySpectacle($id);
             $artistes = $this->getArtistesBySpectacle($id);
+            $annule = $this->getAnnuleBySpectacle($id);
 
-            $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style);
+            $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style, $annule);
             $spectacle->setId($id);
             $spectacle->setImages($images);
             $spectacle->setArtistes($artistes);
@@ -222,8 +223,9 @@ class NRVRepository{
         $style = $s['nomStyle'];
         $images = $this->getImagesBySpectacle($id);
         $artistes = $this->getArtistesBySpectacle($id);
+        $annule = $this->getAnnuleBySpectacle($id);
 
-        $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style);
+        $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style, $annule);
         $spectacle->setId($id);
         $spectacle->setImages($images);
         $spectacle->setArtistes($artistes);
@@ -251,6 +253,14 @@ class NRVRepository{
             $artistes[] = $a['nomArtiste'];
         }
         return $artistes;
+    }
+
+    public function getAnnuleBySpectacle(int $id): bool {
+        $stmt = $this->pdo->prepare("SELECT estAnnule FROM spectacle WHERE idSpectacle = ?");
+        $stmt->bindParam(1, $id);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return (bool) $result['estAnnule'];
     }
 
     public function inscription(User $user, string $password, int $role):User{
