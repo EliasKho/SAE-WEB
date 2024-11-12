@@ -362,4 +362,37 @@ class NRVRepository{
         $stmt->execute();
     }
 
+    public function getSpectacleFromId(int $idSpectacle): ?Spectacle
+    {
+        $query = "SELECT * FROM spectacle INNER JOIN style ON spectacle.idStyle = style.idStyle WHERE idSpectacle = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['id' => $idSpectacle]);
+
+        $s = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if ($s) {
+            $id = $s['idSpectacle'];
+            $titre = $s['titre'];
+            $description = $s['description'];
+            $video = $s['video'];
+            $horaire = $s['horaireSpec'];
+            $duree = $s['dureeSpec'];
+            $style = $s['nomStyle'];
+
+            $images = $this->getImagesBySpectacle($id);
+            $artistes = $this->getArtistesBySpectacle($id);
+            $annule = $this->getAnnuleBySpectacle($id);
+
+            $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style, $annule);
+            $spectacle->setId($id);
+            $spectacle->setImages($images);
+            $spectacle->setArtistes($artistes);
+
+            return $spectacle;
+        }
+
+        return null;
+    }
+
+
 }

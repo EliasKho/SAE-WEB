@@ -2,8 +2,8 @@
 
 namespace iutnc\nrv\action;
 
-use iutnc\nrv\festival\Spectacle;
-use function Sodium\add;
+use iutnc\nrv\render\SpectacleRender;
+use iutnc\nrv\repository\NRVRepository;
 
 class Preferences extends Action {
 
@@ -11,12 +11,25 @@ class Preferences extends Action {
     {
         $res = "<h1>Préférences</h1><br>";
         if (!isset($_COOKIE["preferences"])) {
-            $res .= "<h3>Pas encore de préférences</h3>";
+            $preferences = [];
+            $cookie = serialize($preferences);
+            setcookie('preferences', $cookie, time() + 60 * 60 * 24 * 30);
         } else {
             $preferences = unserialize($_COOKIE["preferences"]);
+
+            if (isset($_GET["idSpectacle"]) && !in_array($_GET["idSpectacle"], $preferences)) {
+                $preferences[] = $_GET["idSpectacle"];
+                $cookie = serialize($preferences);
+                setcookie('preferences', $cookie, time() + 60 * 60 * 24 * 30);
+            }
+
             $res .= "<ul>";
             foreach ($preferences as $pref) {
-                $res .= "<li>" . $pref . "</li>";
+                //$res .= "<li>" . htmlspecialchars($pref) . "</li>";
+                $r = NRVRepository::getInstance();
+                $spectacle = $r->getSpectacleFromId($pref);
+                $sr = new SpectacleRender($spectacle);
+                $res.=$sr->renderCompact()."<br>";
             }
             $res .= "</ul>";
         }
@@ -26,22 +39,9 @@ class Preferences extends Action {
 
 
 
+
     protected function executePost(): string
     {
-        if (!isset($_COOKIE['preferences']) || !is_array(@unserialize($_COOKIE['preferences']))) {
-            $array = [];
-        } else {
-            $array = unserialize($_COOKIE['preferences']);
-        }
-
-        $array[] = $_POST["idSpectacle"];
-        $serializedArray = serialize($array);
-
-        //creation d un cookie d un mois, pour la duree de tout le festival
-        setcookie('preferences', $serializedArray, time() + 60 * 60 * 24 * 30);
-
-        echo $_COOKIE['preferences'];
-
-        return $this->executeGet();
+       return $this->executeGet();
     }
 }
