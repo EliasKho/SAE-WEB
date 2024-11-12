@@ -14,7 +14,20 @@ class DisplaySpectacle extends Action{
         $r = NRVRepository::getInstance();
         $spectacle = $r->getSpectacleById($_GET['id']);
         $render = new SpectacleRender($spectacle);
-        return $render->renderFull();
+        $html = $render->renderFull();
+        // Ajout du formulaire caché pour filtrer par lieu
+        $r = NRVRepository::getInstance();
+        $lieu = $r->getLieuFromSpectacle($spectacle->idSpectacle);
+        $html .= <<<HTML
+            <br>
+            <form method="post" action="?action=spectacles" style="display:inline;">
+                <input type="hidden" name="lieu" value="{$lieu}">
+                <button type="submit">Voir les spectacles se déroulant au même endroit</button>
+            </form>
+        HTML;
+
+        $html .= "</div>";
+        return $html;
     }
 
     protected function executePost(): string {

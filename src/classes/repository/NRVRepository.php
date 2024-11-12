@@ -470,6 +470,12 @@ class NRVRepository{
         return $result ? (int) $result : null;
     }
 
-
-
+    public function getLieuFromSpectacle(int $idSpectacle): int
+    {
+        $stmt = $this->pdo->prepare("SELECT idLieu from soiree INNER JOIN appartient ON soiree.idSoiree = appartient.idSoiree WHERE idSpectacle = ?");
+        $stmt->bindParam(1, $idSpectacle);
+        $stmt->execute();
+        $result = $stmt->fetchColumn();
+        return (int)$result;
+    }
 }

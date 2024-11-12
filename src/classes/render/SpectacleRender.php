@@ -99,7 +99,6 @@ class SpectacleRender
                     <p>{$horaire}</p>
                     <p>{$video}</p>
                     <p>{$images}</p>
-                </div>
                 FIN;
     }
 }
