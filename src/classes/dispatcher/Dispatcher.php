@@ -5,6 +5,8 @@ namespace iutnc\nrv\dispatcher;
 use iutnc\nrv\action as ACT;
 use iutnc\nrv\auth\AuthnProvider;
 use iutnc\nrv\auth\Authz;
+use iutnc\nrv\exception\AuthnException;
+use iutnc\nrv\exception\AuthorizationException;
 use iutnc\nrv\user\User;
 use Exception;
 
@@ -41,6 +43,9 @@ class Dispatcher
             case 'creerStaff':
                 $act = new ACT\CreerStaff();
                 break;
+            case 'deconnexion':
+                $act = new ACT\Deconnexion();
+                break;
             default:
                 $act = new ACT\DefaultAction();
                 break;
@@ -50,16 +55,20 @@ class Dispatcher
 
     private function renderPage(string $html): void
     {
-        // Vérifier si un administrateur est connecté
-        $adminMenu = '';
+        $adminMenu='';
+        $connexion='';
+        $logOut="<li><a href='index.php?action=deconnexion' class='button'>Déconnexion</a></li>";
         try {
             $user = AuthnProvider::getSignedInUser();
             $authz = new Authz($user);
             if ($authz->checkRole(User::$ADMIN)) {
                 $adminMenu = "<li><a href='index.php?action=creerStaff' class='button'>Créer Staff</a></li>";
             }
-        } catch (Exception $e) {
-            // Aucun utilisateur connecté ou l'utilisateur n'est pas un admin
+        } catch (AuthorizationException $aze){
+        } catch (AuthnException $ane) {
+            $logOut='';
+            $connexion="<li><a href='index.php?action=connexion' class='button'>Connexion</a></li>
+                 <li><a href='index.php?action=inscription' class='button'>Inscription</a></li>";
         }
 
         $final = <<<FIN
@@ -75,11 +84,12 @@ class Dispatcher
                 <h1>Bienvenue sur le site NRV</h1>
                 <nav>
                     <ul id="ulmenu">
-                        <li><a href='index.php?action=connexion' class="button">Connexion</a></li>
-                        <li><a href='index.php?action=inscription' class="button">Inscription</a></li>
+                        <li><a href='index.php?action=menu' class='button'>Accueil</a></li>
+                        $connexion
                         <li><a href='index.php?action=preferences' class="button">Mes Préférences</a></li>
                         <li><a href='index.php?action=festival' class="button">Voir Festival</a></li>
                         $adminMenu
+                        $logOut
                     </ul>
                 </nav>
             </header>
