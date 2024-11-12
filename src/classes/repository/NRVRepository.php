@@ -341,7 +341,7 @@ class NRVRepository{
 
     }
 
-    public function updateSpectacle(Spectacle $spectacle): void
+    public function updateEtatSpectacle(Spectacle $spectacle): void
     {
         $query = "UPDATE spectacle SET estAnnule = :estAnnule WHERE idSpectacle = :id";
         $stmt = $this->pdo->prepare($query);
@@ -410,5 +410,66 @@ class NRVRepository{
 
         return null;
     }
+
+    public function updateSpectacle(int $id, string $titre, string $horaire, int $duree, string $description, int $style, array $images, string $video)
+    {
+        // Mise à jour des informations principales du spectacle
+        $stmt = $this->pdo->prepare("UPDATE spectacle SET titre = ?, description = ?, video = ?, horaireSpec = ?, dureeSpec = ?, idStyle = ? WHERE idSpectacle = ?");
+        $stmt->bindParam(1, $titre);
+        $stmt->bindParam(2, $description);
+        $stmt->bindParam(3, $video);
+        $stmt->bindParam(4, $horaire);
+        $stmt->bindParam(5, $duree);
+        $stmt->bindParam(6, $style);
+        $stmt->bindParam(7, $id);
+        $stmt->execute();
+
+        $nouvelleImage = array_filter($images['name'], fn($name) => !empty($name));
+
+        if (!empty($nouvelleImage)) {
+            // Suppression des anciennes associations avec les images et artistes (si nécessaire)
+            $this->deleteSpectacleImages($id);
+
+            // Ajout des nouvelles images
+            foreach ($images['name'] as $index => $nom) {
+                if (!empty($nom)) {
+                    $tmpName = $images['tmp_name'][$index];
+                    $extension = pathinfo($nom, PATHINFO_EXTENSION);
+                    $nouveauNom = bin2hex(random_bytes(10)) . '.' . $extension;
+                    move_uploaded_file($tmpName, "img/" . $nouveauNom);
+
+                    // Ajout de l'image dans la base de données
+                    $idImage = $this->ajouterImage($nouveauNom);
+                    $this->lierSpectacleImage($id, $idImage);
+                }
+            }
+        }
+    }
+
+    public function deleteSpectacleImages(int $idSpectacle)
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM imageSpec WHERE idSpectacle = ?");
+        $stmt->bindParam(1, $idSpectacle);
+        $stmt->execute();
+    }
+
+    public function deleteSpectacleArtistes(int $idSpectacle)
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM jouer WHERE idSpectacle = ?");
+        $stmt->bindParam(1, $idSpectacle);
+        $stmt->execute();
+    }
+
+
+    public function getArtisteIdByName(string $nomArtiste): ?int
+    {
+        $stmt = $this->pdo->prepare("SELECT idArtiste FROM ARTISTE WHERE nomArtiste = ?");
+        $stmt->execute([$nomArtiste]);
+        $result = $stmt->fetchColumn();
+
+        return $result ? (int) $result : null;
+    }
+
+
 
 }
