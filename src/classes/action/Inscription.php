@@ -48,7 +48,9 @@ class Inscription extends Action {
         try {
             AuthnProvider::register($username, $email, $password);
         } catch (AuthnException $e) {
-            return "Erreur lors de l'authentification : ".$e->getMessage();
+            $message = $e->getMessage();
+            echo "<script>window.onload = ()=>{window.alert('$message');};</script>";
+            return "Erreur lors de l'inscription : ".$e->getMessage();
         }
         return "Inscription réussie";
     }
