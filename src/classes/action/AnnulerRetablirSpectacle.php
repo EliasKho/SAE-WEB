@@ -34,7 +34,7 @@ class AnnulerRetablirSpectacle extends Action
             // Enregistrer la mise à jour dans la base de données
             $repository->updateSpectacle($spectacle);
 
-            echo "<script>window.alert ('$message');</script>";
+            echo "<script>window.onload = ()=>{window.alert('$message');};</script>";
             $act = new ACT\Spectacles();
             return $act->executeGet();
         }
