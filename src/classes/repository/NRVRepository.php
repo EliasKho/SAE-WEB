@@ -126,7 +126,7 @@ class NRVRepository{
         return $spectacles;
     }
 
-    public function getSpectacleByTri(string $date, string $style, string $lieu): array
+    public function getSpectaclesByTri(string $date, string $style, string $lieu): array
     {
         if ($date == null && $style == null && $lieu == null) {
             return $this->getAllSpectacles();
