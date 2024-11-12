@@ -362,4 +362,15 @@ class NRVRepository{
         $stmt->execute();
     }
 
+    public function ajouterSoiree(string $titre, string $thematique, string $date, string $horaire, float $tarif, int $lieu){
+        $stmt = $this->pdo->prepare("INSERT INTO soiree (nomSoiree, thematique, dateSoiree, horaireDebut, tarif, idLieu) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bindParam(1, $titre);
+        $stmt->bindParam(2, $thematique);
+        $stmt->bindParam(3, $date);
+        $stmt->bindParam(4, $horaire);
+        $stmt->bindParam(5, $tarif);
+        $stmt->bindParam(6, $lieu);
+        $stmt->execute();
+    }
+
 }
