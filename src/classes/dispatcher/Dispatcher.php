@@ -4,6 +4,7 @@ namespace iutnc\nrv\dispatcher;
 
 use iutnc\nrv\action as ACT;
 use iutnc\nrv\auth\AuthnProvider;
+use iutnc\nrv\auth\Authz;
 use iutnc\nrv\user\User;
 
 class Dispatcher
@@ -52,7 +53,8 @@ class Dispatcher
         $adminMenu = '';
         try {
             $user = AuthnProvider::getSignedInUser();
-            if ($user->getRole() === User::$ADMIN) {
+            $authz = new Authz($user);
+            if ($authz->checkRole(3)) {
                 $adminMenu = "<li><a href='index.php?action=creerStaff' class='button'>Créer Staff</a></li>";
             }
         } catch (\Exception $e) {
