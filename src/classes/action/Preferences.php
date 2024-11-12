@@ -17,19 +17,29 @@ class Preferences extends Action {
         } else {
             $preferences = unserialize($_COOKIE["preferences"]);
 
-            if (isset($_GET["idSpectacle"]) && !in_array($_GET["idSpectacle"], $preferences)) {
+            if (isset($_GET["idSpectacle"])&& $_GET["action2"] == "ajouter"
+            && !in_array($_GET["idSpectacle"], $preferences)) {
                 $preferences[] = $_GET["idSpectacle"];
                 $cookie = serialize($preferences);
                 setcookie('preferences', $cookie, time() + 60 * 60 * 24 * 30);
             }
 
+            if (isset($_GET["idSpectacle"]) && $_GET["action2"] == "supprimer") {
+                $idSpectacle = $_GET["idSpectacle"];
+
+                if (($key = array_search($idSpectacle, $preferences)) !== false) {
+                    unset($preferences[$key]);
+                    $preferences = array_values($preferences); // Réindexe le tableau pour éviter les trous
+                    setcookie('preferences', serialize($preferences), time() + 60 * 60 * 24 * 30);
+                }
+            }
+
             $res .= "<ul>";
             foreach ($preferences as $pref) {
-                //$res .= "<li>" . htmlspecialchars($pref) . "</li>";
                 $r = NRVRepository::getInstance();
                 $spectacle = $r->getSpectacleFromId($pref);
                 $sr = new SpectacleRender($spectacle);
-                $res.=$sr->renderCompact()."<br>";
+                $res.=$sr->renderPreferences()."<br>";
             }
             $res .= "</ul>";
         }

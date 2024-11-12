@@ -47,7 +47,7 @@ class SpectacleRender
         return <<<FIN
                 <br>
                  <div class="button-group">
-                    <a href='index.php?action=preferences&idSpectacle=$id' class='button'>Ajouter à mes préférences</a>
+                    <a href='index.php?action=preferences&action2=ajouter&idSpectacle=$id' class='button'>Ajouter à mes préférences</a>
                     $btnAnnuler
                     $btnModifSpec
                  </div>  
@@ -99,6 +99,31 @@ class SpectacleRender
                     <p>{$horaire}</p>
                     <p>{$video}</p>
                     <p>{$images}</p>
+                FIN;
+    }
+
+    public function renderPreferences():string
+    {
+        $id=filter_var($this->spectacle->idSpectacle, FILTER_SANITIZE_NUMBER_INT);
+        $image = filter_var($this->spectacle->images[0], FILTER_SANITIZE_URL);
+        $titre = filter_var($this->spectacle->titre, FILTER_SANITIZE_SPECIAL_CHARS);
+        $horaire = filter_var($this->spectacle->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
+        $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
+        $estAnnule = filter_var($this->spectacle->estAnnule, FILTER_SANITIZE_SPECIAL_CHARS);
+
+        // Affichage du label "ANNULÉ" si le spectacle est annulé
+        $annuleLabel = $estAnnule ? "<div class='annule'>ANNULÉ</div>" : "";
+        return <<<FIN
+                <br>
+                 <div class="button-group">
+                    <a href='index.php?action=preferences&action2=supprimer&idSpectacle=$id' class='button'>Retirer de mes préférences</a>
+                 </div>  
+                <a href = "index.php?action=display-spectacle&id=$id"><div class='spectacle'>
+                    <p>{$annuleLabel}</p>
+                    <h2>{$titre}</h2>
+                    <img alt="image du spectacle" src='{$image}'>
+                </div></a>
+                <br>
                 FIN;
     }
 }
