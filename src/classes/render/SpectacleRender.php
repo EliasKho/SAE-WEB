@@ -27,6 +27,15 @@ class SpectacleRender
         $estAnnule = filter_var($this->spectacle->estAnnule, FILTER_SANITIZE_SPECIAL_CHARS);
         $btnAnnuler = "";
         $btnModifSpec = "";
+        $btnPref = "<a href='index.php?action=preferences&action2=ajouter&idSpectacle=$id' class='button'>Ajouter à mes préférences</a>";
+
+        if (isset($_COOKIE["preferences"])) {
+            $preferences = unserialize($_COOKIE["preferences"]);
+            // Si l'ID du spectacle est dans le cookie, définir le bouton "Voir mes préférences"
+            if (in_array($id, $preferences)) {
+                $btnPref = "<a href='index.php?action=preferences' class='button'>Voir mes préférences</a>";
+            }
+        }
 
         // Affichage du label "ANNULÉ" si le spectacle est annulé
         $annuleLabel = $estAnnule ? "<div class='annule'>ANNULÉ</div>" : "";
@@ -47,7 +56,7 @@ class SpectacleRender
         return <<<FIN
                 <br>
                  <div class="button-group">
-                    <a href='index.php?action=preferences&action2=ajouter&idSpectacle=$id' class='button'>Ajouter à mes préférences</a>
+                    $btnPref
                     $btnAnnuler
                     $btnModifSpec
                  </div>  
@@ -83,15 +92,27 @@ class SpectacleRender
         $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         $horaire = filter_var($this->spectacle->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         $estAnnule = filter_var($this->spectacle->estAnnule, FILTER_VALIDATE_BOOLEAN);
+        $id = filter_var($this->spectacle->idSpectacle, FILTER_SANITIZE_SPECIAL_CHARS);
+        $id = intval($id);
 
         // Affichage du label "ANNULÉ" si le spectacle est annulé
         $annuleLabel = $estAnnule ? "<div class='annule'>ANNULÉ</div>" : "";
+
+        $btnPref = "<a href='index.php?action=preferences&action2=ajouter&idSpectacle=$id' class='button'>Ajouter à mes préférences</a>";
+        if (isset($_COOKIE["preferences"])) {
+            $preferences = unserialize($_COOKIE["preferences"]);
+            // Si l'ID du spectacle est dans le cookie, définir le bouton "Voir mes préférences"
+            if (in_array($id, $preferences)) {
+                $btnPref = "<a href='index.php?action=preferences' class='button'>Voir mes préférences</a>";
+            }
+        }
 
         return <<<FIN
                 <div class='spectacle'>
                     {$annuleLabel}
                     <h2>{$titre}</h2>
                     <h3>Artistes : </h3>
+                    $btnPref
                     <p>{$artistes}</br></p>
                     <p>{$description}</p>
                     <p>{$style}</p>
