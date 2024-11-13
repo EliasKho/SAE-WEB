@@ -2,11 +2,21 @@
 
 namespace iutnc\nrv\action;
 
+use iutnc\nrv\auth\Authz;
+use iutnc\nrv\exception\AuthorizationException;
 use iutnc\nrv\repository\NRVRepository;
+use Exception;
 
 class AjouterSpectacle extends Action{
 
     public function executeGet() : string{
+        try {
+            $authz = new AuthZ(unserialize($_SESSION["user"]));
+            $authz->checkRole(2);
+        } catch (AuthorizationException $e) {
+            return $e->getMessage();
+        }
+
         $r = NRVRepository::getInstance();
         $styles = $r->getAllStyles();
         $artistes = $r->getAllArtistes();
@@ -80,6 +90,14 @@ class AjouterSpectacle extends Action{
     }
 
     public function executePost() : string{
+
+        try {
+            $authz = new AuthZ(unserialize($_SESSION["user"]));
+            $authz->checkRole(2);
+        } catch (AuthorizationException $e) {
+            return $e->getMessage();
+        }
+
         $uploadDir = 'img/';
 
         $titre = $_POST['titre'];

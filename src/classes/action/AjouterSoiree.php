@@ -2,10 +2,18 @@
 
 namespace iutnc\nrv\action;
 
+use iutnc\nrv\auth\Authz;
+use iutnc\nrv\exception\AuthorizationException;
 use iutnc\nrv\repository\NRVRepository;
 
 class AjouterSoiree extends Action{
     public function executeGet() : string{
+        try {
+            $authz = new AuthZ(unserialize($_SESSION["user"]));
+            $authz->checkRole(2);
+        } catch (AuthorizationException $e) {
+            return $e->getMessage();
+        }
         $r = NRVRepository::getInstance();
         $lieux = $r->getAllLieux();
         $html = "";
@@ -46,6 +54,12 @@ class AjouterSoiree extends Action{
     }
 
     public function executePost() : string{
+        try {
+            $authz = new AuthZ(unserialize($_SESSION["user"]));
+            $authz->checkRole(2);
+        } catch (AuthorizationException $e) {
+            return $e->getMessage();
+        }
         $titre = $_POST["titre"];
         $thematique = $_POST["thematique"];
         $date = $_POST["date"];
