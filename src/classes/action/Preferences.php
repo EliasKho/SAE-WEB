@@ -16,10 +16,10 @@ class Preferences extends Action {
             $preferences = $r->getPreferences($user->id);
             if (isset($_GET["idSpectacle"])){
                 $idSpectacle = $_GET["idSpectacle"];
-                if ($_GET["action2"] == "ajouter"){
+                if ($_GET["action2"] == "ajouter" && !in_array($idSpectacle, $preferences)){
                     $r->ajouterPreference($user->id, $idSpectacle);
                 }
-                elseif ($_GET["action2"] == "supprimer"){
+                elseif ($_GET["action2"] == "supprimer" && in_array($idSpectacle, $preferences)){
                     $r->supprimerPreference($user->id, $idSpectacle);
                 }
             }
