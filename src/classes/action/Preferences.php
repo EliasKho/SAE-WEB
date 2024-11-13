@@ -12,7 +12,7 @@ class Preferences extends Action {
         if (isset($_SESSION['user'])){
             $r = NRVRepository::getInstance();
             $user = unserialize($_SESSION['user']);
-            $html = "<h1>Préférences</h1><br>";
+            $html = "<h1>Préférences</h1>";
             $preferences = $r->getPreferences($user->id);
             if (isset($_GET["idSpectacle"])){
                 $idSpectacle = $_GET["idSpectacle"];
@@ -33,7 +33,7 @@ class Preferences extends Action {
             $html .= "</ul>";
         }
         else {
-            $html = "<h1>Préférences</h1><br>";
+            $html = "<h1>Préférences</h1>";
             if (!isset($_COOKIE["preferences"])) {
                 $preferences = [];
                 $cookie = serialize($preferences);
