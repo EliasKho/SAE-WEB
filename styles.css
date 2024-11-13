@@ -25,6 +25,13 @@ h1 {
     margin-bottom: 20px;
 }
 
+#titre {
+    color: #ffffff;
+    font-size: 3em;
+    margin-top: 0px;
+    margin-bottom: 30px;
+}
+
 nav ul {
     list-style: none;
     padding: 0;

@@ -97,7 +97,7 @@ class Dispatcher
         </head>
         <body>
             <header>
-                <h1>Bienvenue sur le site NRV</h1>
+                <h1 id="titre">Bienvenue sur le site NRV</h1>
                 <nav>
                     <ul id="ulmenu">
                         <li><a href='index.php?action=menu' class='button'>Accueil</a></li>
