@@ -473,4 +473,32 @@ class NRVRepository{
         $result = $stmt->fetchColumn();
         return $result;
     }
+
+    public function getPreferences(int $idUser): array
+    {
+        $stmt = $this->pdo->prepare("SELECT idSpectacle FROM preference WHERE idUser = ?");
+        $stmt->bindParam(1, $idUser);
+        $stmt->execute();
+        $preferences = [];
+        while ($p = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $preferences[] = $p['idSpectacle'];
+        }
+        return $preferences;
+    }
+
+    public function supprimerPreference(int $idUser, int $idSpectacle)
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM preference WHERE idUser = ? AND idSpectacle = ?");
+        $stmt->bindParam(1, $idUser);
+        $stmt->bindParam(2, $idSpectacle);
+        $stmt->execute();
+    }
+
+    public function ajouterPreference(int $idUser, int $idSpectacle)
+    {
+        $stmt = $this->pdo->prepare("INSERT INTO preference (idUser, idSpectacle) VALUES (?, ?)");
+        $stmt->bindParam(1, $idUser);
+        $stmt->bindParam(2, $idSpectacle);
+        $stmt->execute();
+    }
 }
