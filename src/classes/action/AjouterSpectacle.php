@@ -51,13 +51,28 @@ class AjouterSpectacle extends Action{
                 <label>Artistes du spectacle:</label>
             FIN;
         for ($i = 1; $i <= count($artistes); $i++) {
-            $html.="<label><input type='checkbox' id='artistes' name='artistes[]' value='$i' required>". $artistes[$i-1] ."</label>";
+            $html.="<label><input type='checkbox' id='artistes' name='artistes[]' value='$i'>". $artistes[$i-1] ."</label>";
         }
         $html.= <<<FIN
                 </select>
                 </br></br>
-                <input type="submit" value="Ajouter">
+                <input type="submit" onclick='return validateCheckboxes()' value="Ajouter">
                 </form>
+
+
+            <script>
+            function validateCheckboxes() {
+                // Sélectionne toutes les cases à cocher dans le groupe
+                var checkboxes = document.querySelectorAll("input[type='checkbox']");
+                // Vérifie si au moins une case est cochée
+                for (var checkbox of checkboxes) {
+                    if (checkbox.checked) return true;
+                }
+                // Alerte et empêche l'envoi du formulaire si aucune case n'est cochée
+                alert("Veuillez sélectionner au moins un artiste.");
+                return false;
+            }
+            </script>
             FIN;
 
         return $html;
@@ -75,9 +90,7 @@ class AjouterSpectacle extends Action{
         $images = $_FILES['images'];
         $video = $_POST['video'];
         $artistes = $_POST['artistes'];
-
-        var_dump($images);
-
+        
         $r = NRVRepository::getInstance();
         $spectacle = $r->ajouterSpectacle($titre, $horaire, $duree, $description, $style, $images, $video);
         $idSpec = $spectacle->idSpectacle;
@@ -109,6 +122,9 @@ class AjouterSpectacle extends Action{
         }
 
         foreach($artistes as $artiste){
+            if ($artiste == '') {
+                continue;
+            }
             $r->lierSpectacleArtiste($idSpec, $artiste);
         }
 
