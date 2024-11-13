@@ -22,6 +22,8 @@ class AuthnProvider
             throw new AuthnException("Mot de passe incorrect");
         }
 
+        self::setPreferences($user);
+
         $_SESSION['user'] = serialize($user);
     }
 
@@ -48,6 +50,8 @@ class AuthnProvider
         $user = new User($username, $email);
         $user = $r->inscription($user, $password, $role);
 
+        self::setPreferences($user);
+
         $_SESSION['user'] = serialize($user);
     }
 
@@ -63,5 +67,21 @@ class AuthnProvider
     {
         AuthnProvider::getSignedInUser();
         unset($_SESSION['user']);
+    }
+
+    public static function setPreferences(User $user): void
+    {
+        $r = NRVRepository::getInstance();
+        if (isset($_COOKIE['preferences'])){
+            $preferences = unserialize($_COOKIE['preferences']);
+            $userPrefs = $r->getPreferences($user->id);
+            foreach($preferences as $pref){
+                if (!in_array($pref, $userPrefs)) {
+                    $r->ajouterPreference($user->id, $pref);
+                }
+            }
+            setcookie('preferences', '', time() - 3600);
+        }
+
     }
 }

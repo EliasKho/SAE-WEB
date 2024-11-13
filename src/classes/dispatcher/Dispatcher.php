@@ -67,12 +67,17 @@ class Dispatcher
 
     private function renderPage(string $html): void
     {
+        $staffMenu='';
         $adminMenu='';
         $connexion='';
         $logOut="<li><a href='index.php?action=deconnexion' class='button'>Déconnexion</a></li>";
         try {
             $user = AuthnProvider::getSignedInUser();
             $authz = new Authz($user);
+            if ($authz->checkRole(User::$STAFF)) {
+                $staffMenu = "<li><a href='index.php?action=add-spectacle' class='button'>Ajouter Spectacle</a></li>";
+                $staffMenu .= "<li><a href='index.php?action=add-soiree' class='button'>Ajouter Soirée</a></li>";
+            }
             if ($authz->checkRole(User::$ADMIN)) {
                 $adminMenu = "<li><a href='index.php?action=creerStaff' class='button'>Créer Staff</a></li>";
             }
@@ -105,8 +110,7 @@ class Dispatcher
                         <li><a href='index.php?action=preferences' class="button">Mes Préférences</a></li>
                         <li><a href='index.php?action=spectacles' class="button">Spectacles</a></li>
                         <li><a href='index.php?action=soiree' class="button">Soirées</a></li>
-                        <li><a href='index.php?action=add-spectacle' class="button">Ajouter Spectacle</a></li>
-                        <li><a href='index.php?action=add-soiree' class="button">Ajouter Soirée</a></li>
+                        $staffMenu
                         $adminMenu
                         $logOut
                     </ul>
