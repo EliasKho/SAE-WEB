@@ -14,7 +14,7 @@ class ModifierSpectacle extends Action
         }
 
         $repository = NRVRepository::getInstance();
-        $spectacle = $repository->getSpectacleById($idSpectacle);
+        $spectacle = $repository->getSpectacleFromId($idSpectacle);
 
         if (!$spectacle) {
             return "Spectacle introuvable.";

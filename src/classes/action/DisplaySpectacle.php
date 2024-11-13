@@ -12,18 +12,33 @@ class DisplaySpectacle extends Action{
             return 'Spectacle non trouvé';
         }
         $r = NRVRepository::getInstance();
-        $spectacle = $r->getSpectacleById($_GET['id']);
+        $spectacle = $r->getSpectacleFromId($_GET['id']);
         $render = new SpectacleRender($spectacle);
         $html = $render->renderFull();
         // Ajout du formulaire caché pour filtrer par lieu
         $r = NRVRepository::getInstance();
         $lieu = $r->getLieuFromSpectacle($spectacle->idSpectacle);
+        $style = $spectacle->style;
+        $style = $r->getIdByStyle($style);
+        $date = $r->getDateFromSpectacle($spectacle->idSpectacle);
         $html .= <<<HTML
             <br>
             <form method="post" action="?action=spectacles" style="display:inline;">
                 <input type="hidden" name="lieu" value="{$lieu}">
-                <button type="submit">Voir les spectacles se déroulant au même endroit</button>
+                <button type="submit" class="button">Voir les spectacles se déroulant au même endroit</button>
             </form>
+            <br>
+            </br>
+            <form method="post" action="?action=spectacles" style="display:inline;">
+                <input type="hidden" name="style" value="{$style}">
+                <button type="submit" class="button">Voir les spectacles du même style</button>
+            </form>
+            <br>
+            </br>
+            <form method="post" action="?action=spectacles" style="display:inline;">
+                <input type="hidden" name="date" value="{$date}">
+                <button type="submit" class="button">Voir les spectacles à la même date</button>
+            </form> 
         HTML;
 
         $html .= "</div>";

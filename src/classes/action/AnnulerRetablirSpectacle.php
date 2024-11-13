@@ -19,7 +19,7 @@ class AnnulerRetablirSpectacle extends Action
 
         // Récupérer le spectacle depuis le dépôt
         $repository = NRVRepository::getInstance();
-        $spectacle = $repository->getSpectacleById($idSpectacle);
+        $spectacle = $repository->getSpectacleFromId($idSpectacle);
 
         if ($spectacle) {
             // Basculer l'état d'annulation

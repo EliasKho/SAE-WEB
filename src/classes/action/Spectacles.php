@@ -10,9 +10,7 @@ class Spectacles extends Action {
     protected function executeGet(): string {
         $r = NRVRepository::getInstance();
         $spectacles = $r->getAllSpectacles();
-//        var_dump($spectacles);
         $styles=$r->getAllStyles();
-        var_dump($styles);
         list($html, $style, $lieu) = $this->form($r, $styles);
         foreach ($spectacles as $spectacle) {
             $render = new SpectacleRender($spectacle);

@@ -185,29 +185,6 @@ class NRVRepository{
         return $password['password'];
     }
 
-    public function getSpectacleById(int $idSpec){
-        $stmt = $this->pdo->prepare("SELECT * FROM spectacle inner join style on spectacle.idStyle = style.idStyle WHERE idSpectacle = ?");
-        $stmt->bindParam(1, $idSpec);
-        $stmt->execute();
-        $s = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $id = $s['idSpectacle'];
-        $titre = $s['titre'];
-        $description = $s['description'];
-        $video = $s['video'];
-        $horaire = $s['horaireSpec'];
-        $duree = $s['dureeSpec'];
-        $style = $s['nomStyle'];
-        $images = $this->getImagesBySpectacle($id);
-        $artistes = $this->getArtistesBySpectacle($id);
-        $annule = $this->getAnnuleBySpectacle($id);
-
-        $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style, $annule);
-        $spectacle->setId($id);
-        $spectacle->setImages($images);
-        $spectacle->setArtistes($artistes);
-        return $spectacle;
-    }
-
 
     public function getImagesBySpectacle(int $id){
         $stmt = $this->pdo->prepare("SELECT * FROM image inner join imageSpec on imageSpec.idImage = image.idImage WHERE idSpectacle = ?");
@@ -477,5 +454,23 @@ class NRVRepository{
         $stmt->execute();
         $result = $stmt->fetchColumn();
         return (int)$result;
+    }
+
+    public function getIdByStyle(string $style): int
+    {
+        $stmt = $this->pdo->prepare("SELECT idStyle FROM style WHERE nomStyle = ?");
+        $stmt->bindParam(1, $style);
+        $stmt->execute();
+        $result = $stmt->fetchColumn();
+        return (int)$result;
+    }
+
+    public function getDateFromSpectacle(int $idSpectacle): string
+    {
+        $stmt = $this->pdo->prepare("SELECT dateSoiree from soiree INNER JOIN appartient ON soiree.idSoiree = appartient.idSoiree WHERE idSpectacle = ?");
+        $stmt->bindParam(1, $idSpectacle);
+        $stmt->execute();
+        $result = $stmt->fetchColumn();
+        return $result;
     }
 }
