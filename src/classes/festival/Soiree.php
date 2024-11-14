@@ -12,9 +12,9 @@ class Soiree
     private float $tarif;
     private $idLieu;
 
-    public function __construct(string $nomSoiree,string $temathique,string $dateSoiree,string $horaireDebut,float $tarif,int $idLieu)
+    public function __construct(string $nomSoiree,string $temathique,string $dateSoiree,string $horaireDebut,float $tarif,int $idLieu, int $id=0)
     {
-        $this->idSoiree = 0;
+        $this->idSoiree = $id;
         $this->nomSoiree = $nomSoiree;
         $this->temathique = $temathique;
         $this->dateSoiree = $dateSoiree;

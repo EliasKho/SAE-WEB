@@ -246,8 +246,7 @@ class NRVRepository{
         $stmt->bindParam(6, $style);
         $stmt->execute();
         $idSpec = $this->pdo->lastInsertId();
-        $spectacle = new Spectacle($titre, $desc, $video, $horaire, $duree, $style);
-        $spectacle->setId($idSpec);
+        $spectacle = new Spectacle($titre, $desc, $video, $horaire, $duree, $style, false, $idSpec);
         return $spectacle;
     }
 
@@ -304,15 +303,8 @@ class NRVRepository{
         $stmt = $this->pdo->prepare("SELECT * FROM soiree");
         $stmt->execute();
         while ($s = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $nomSoiree = $s['nomSoiree'];
-            $thematique = $s['thematique'];
-            $dateSoiree = $s['dateSoiree'];
-            $horaireDebut = $s['horaireDebut'];
-            $tarif = $s['tarif'];
-            $idLieu = $s['idLieu'];
-
-            $soiree = new Soiree($nomSoiree, $thematique, $dateSoiree, $horaireDebut, $tarif, $idLieu);
-            $soiree->setId($s['idSoiree']);
+            $id = $s['idSoiree'];
+            $soiree = $this->getSoireeById($id);
             $soirees[] = $soiree;
         }
 
@@ -340,10 +332,7 @@ class NRVRepository{
             $images = $this->getImagesBySpectacle($id);
             $artistes = $this->getArtistesBySpectacle($id);
 
-            $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style, $annule);
-            $spectacle->setId($id);
-            $spectacle->setImages($images);
-            $spectacle->setArtistes($artistes);
+            $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style, $annule, $id, $images, $artistes);
 
             return $spectacle;
         }
@@ -458,13 +447,12 @@ class NRVRepository{
         return $result['idSoiree'];
     }
 
-    public function getSoireeById($id):Soiree{
+    public function getSoireeById(int $id):Soiree{
         $stmt = $this->pdo->prepare("SELECT * FROM soiree WHERE idSoiree =?");
         $stmt->bindParam(1, $id);
         $stmt->execute();
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $soiree = new Soiree($result['nomSoiree'], $result['thematique'], $result['dateSoiree'], $result['horaireDebut'], $result['tarif'], $result['idLieu']);
-        $soiree->setId($id);
+        $soiree = new Soiree($result['nomSoiree'], $result['thematique'], $result['dateSoiree'], $result['horaireDebut'], $result['tarif'], $result['idLieu'], $id);
         return $soiree;
     }
 
