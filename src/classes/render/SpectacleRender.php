@@ -80,26 +80,38 @@ class SpectacleRender
     public function renderFull(): string
     {
         //Affichage détaillé d’un spectacle : titre, artistes, description, style, durée, image(s),extrait audio/vidéo,
+        $estAnnule = filter_var($this->spectacle->estAnnule, FILTER_VALIDATE_BOOLEAN);
+        $id = filter_var($this->spectacle->idSpectacle, FILTER_SANITIZE_SPECIAL_CHARS);
+        $id = intval($id);
+        $titre = filter_var($this->spectacle->titre, FILTER_SANITIZE_SPECIAL_CHARS);
+        $vid = filter_var($this->spectacle->video, FILTER_SANITIZE_URL);
+        $video = "<iframe width='560' height='315' src='{$vid}' title='YouTube video player' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' referrerpolicy='strict-origin-when-cross-origin' allowfullscreen></iframe>";
+
+        $description = filter_var($this->spectacle->description, FILTER_SANITIZE_SPECIAL_CHARS);
+        $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
+        $horaire = filter_var($this->spectacle->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
+
+        $idStyle = $this->spectacle->idStyle;
+        $style = NRVRepository::getInstance()->getStyleById($idStyle);
 
         $images = '';
         foreach ($this->spectacle->images as $image) {
             $image = filter_var($image, FILTER_SANITIZE_URL);
-            $images .= "<img alt='image du spectacle' src='{$image}'>";
+            $img = "<img alt='image du spectacle' src='{$image}'>";
+            $containerId = "container" . $id;
+            if($estAnnule){
+                $img="<div id=".$containerId." class='image-container'></div>
+                    <script src='src/superposerImages.js'></script>
+                    <script>generateCompositeImage('".$image."' ,'img/annule.png','".$containerId."' );</script>";
+                $titre = $titre ." [ANNULÉ]";
+            }
+            $images .= $img;
         }
         $artistes = '';
         foreach ($this->spectacle->artistes as $artiste) {
             $artiste = filter_var($artiste, FILTER_SANITIZE_SPECIAL_CHARS);
             $artistes .= "<p>{$artiste}</p>";
         }
-        $vid = filter_var($this->spectacle->video, FILTER_SANITIZE_URL);
-        $video = "<iframe width='560' height='315' src='{$vid}' title='YouTube video player' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' referrerpolicy='strict-origin-when-cross-origin' allowfullscreen></iframe>";
-        $titre = filter_var($this->spectacle->titre, FILTER_SANITIZE_SPECIAL_CHARS);
-        $description = filter_var($this->spectacle->description, FILTER_SANITIZE_SPECIAL_CHARS);
-        $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
-        $horaire = filter_var($this->spectacle->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
-        $estAnnule = filter_var($this->spectacle->estAnnule, FILTER_VALIDATE_BOOLEAN);
-        $id = filter_var($this->spectacle->idSpectacle, FILTER_SANITIZE_SPECIAL_CHARS);
-        $id = intval($id);
 
         $idStyle = $this->spectacle->idStyle;
         $style = NRVRepository::getInstance()->getStyleFromId($idStyle);
@@ -122,9 +134,9 @@ class SpectacleRender
         if (in_array($id, $preferences)) {
             $btnPref = "<a href='index.php?action=preferences' class='button'>Voir mes préférences</a>";
         }
+
         return <<<FIN
-                <div class='spectacle'>
-                    {$annuleLabel}                
+                <div class='spectacle'>            
                     <h2>{$titre}</h2>
                     $btnPref
                     <h3>Artistes : </h3>                   
@@ -156,6 +168,10 @@ class SpectacleRender
         $idStyle = $this->spectacle->idStyle;
         $style = NRVRepository::getInstance()->getStyleFromId($idStyle);
 
+        if($this->spectacle->estAnnule){
+            $titre .= " [ANNULÉ]";
+        }
+
         return <<<FIN
                 <a href = "index.php?action=display-spectacle&id=$id">
                 <div class='spectacle'>
@@ -177,17 +193,23 @@ class SpectacleRender
         $titre = filter_var($this->spectacle->titre, FILTER_SANITIZE_SPECIAL_CHARS);
         $estAnnule = filter_var($this->spectacle->estAnnule, FILTER_SANITIZE_SPECIAL_CHARS);
 
-        // Affichage du label "ANNULÉ" si le spectacle est annulé
-        $annuleLabel = $estAnnule ? "<div class='annule'>ANNULÉ</div>" : "";
+        $img = "<img alt='image du spectacle' src='{$image}'>";
+        $containerId = "container" . $id;
+        if($estAnnule){
+            $img="<div id=".$containerId." class='image-container'></div>
+                    <script src='src/superposerImages.js'></script>
+                    <script>generateCompositeImage('".$image."' ,'img/annule.png','".$containerId."' );</script>";
+            $titre = $titre ." [ANNULÉ]";
+        }
+
         return <<<FIN
                 <br>
                  <div class="button-group">
                     <a href='index.php?action=preferences&action2=supprimer&idSpectacle=$id' class='button'>Retirer de mes préférences</a>
                  </div>  
                 <a href = "index.php?action=display-spectacle&id=$id"><div class='spectacle'>
-                    <p>{$annuleLabel}</p>
                     <h2>{$titre}</h2>
-                    <img alt="image du spectacle" src='{$image}'>
+                    $img
                 </div></a>
                 <br>
                 FIN;
