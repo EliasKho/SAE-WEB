@@ -50,7 +50,7 @@ class Dispatcher
                 $act = new ACT\Deconnexion();
                 break;
             case 'soiree':
-                $act = new ACT\Soiree();
+                $act = new ACT\DisplayAllSoirees();
                 break;
             case 'AnnulerSpectacle':
                 $act = new ACT\AnnulerRetablirSpectacle();

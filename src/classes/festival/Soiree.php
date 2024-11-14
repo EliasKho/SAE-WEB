@@ -25,4 +25,9 @@ class Soiree
     {
         return $this->$name;
     }
+
+    public function setId(mixed $idSoiree)
+    {
+        $this->idSoiree = $idSoiree;
+    }
 }

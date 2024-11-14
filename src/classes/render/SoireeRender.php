@@ -72,40 +72,35 @@ class SoireeRender
         $r = NRVRepository::getInstance();
         $nomLieu = $r->getNomLieu($idLieu);
         $i = $r->getImagesByLieu($idLieu);
+        $images="";
         foreach ($i as $image) {
             $image = filter_var($image, FILTER_SANITIZE_URL);
-            $images .= "<img alt='image de la soiree' src='{$image}'>";
+            $images .= "<img alt='image du lieu de la soiree' src='{$image}'>";
         }
-        $artistes = '';
-        foreach ($this->soiree->artistes as $artiste) {
-            $artiste = filter_var($artiste, FILTER_SANITIZE_SPECIAL_CHARS);
-            $artistes .= "<p>{$artiste}</p>";
-        }
-        $vid = filter_var($this->soiree->video, FILTER_SANITIZE_URL);
-        $video = "<iframe width='560' height='315' src='{$vid}' title='YouTube video player' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' referrerpolicy='strict-origin-when-cross-origin' allowfullscreen></iframe>";
-        $titre = filter_var($this->soiree->titre, FILTER_SANITIZE_SPECIAL_CHARS);
-        $description = filter_var($this->soiree->description, FILTER_SANITIZE_SPECIAL_CHARS);
-        $style = filter_var($this->soiree->style, FILTER_SANITIZE_SPECIAL_CHARS);
-        $duree = filter_var($this->soiree->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
-        $horaire = filter_var($this->soiree->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
-        $estAnnule = filter_var($this->soiree->estAnnule, FILTER_VALIDATE_BOOLEAN);
-
-        // Affichage du label "ANNULÉ" si le soiree est annulé
-        $annuleLabel = $estAnnule ? "<div class='annule'>ANNULÉ</div>" : "";
-
-        return <<<FIN
+        $tarif=$r->getTarifByIdSoiree($this->soiree->idSoiree);
+        $spectacles = $r->getSpectaclesBySoiree($this->soiree->idSoiree);
+        $html= <<<FIN
+                <br>
                 <div class='soiree'>
-                    {$annuleLabel}
-                    <h2>{$titre}</h2>
-                    <h3>Artistes : </h3>
-                    <p>{$artistes}</br></p>
-                    <p>{$description}</p>
-                    <p>{$style}</p>
-                    <p>{$duree}</p>
-                    <p>{$horaire}</p>
-                    <p>{$video}</p>
-                    <p>{$images}</p>
+                    <h2>{$nom}</h2>
+                    <p>Thématique : {$thematique}</p>
+                    <p>Date de la soirée : {$dateSoiree}</p>
+                    <p>Horaire de début : {$horaireDebut}</p>
+                    <p>Lieu : {$nomLieu}</p>
+                    $images
+                    <p>Tarif : {$tarif}€</p>
+                    <h1>Spectacles de la soiree</h1>
+                FIN;
+        foreach ($spectacles as $spectacle) {
+            $render = new SpectacleRender($spectacle);
+            $html .= $render->renderFull();
+        }
+        $html .= <<<FIN
+                <p>---------------------------------------------------------------</p><br>
+                <p>---------------------------------------------------------------</p>
                 </div>
                 FIN;
+//                FIN;
+        return $html;
     }
 }

@@ -315,7 +315,6 @@ class NRVRepository{
         $stmt->bindParam(1, $idSpec);
         $stmt->bindParam(2, $idArtiste);
         $stmt->execute();
-
     }
 
     public function updateEtatSpectacle(Spectacle $spectacle): void
@@ -344,16 +343,25 @@ class NRVRepository{
         $stmt->execute();
         while ($s = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $nomSoiree = $s['nomSoiree'];
-            $temathique = $s['temathique'];
+            $thematique = $s['thematique'];
             $dateSoiree = $s['dateSoiree'];
             $horaireDebut = $s['horaireDebut'];
             $idLieu = $s['idLieu'];
 
-            $soiree = new Soiree($nomSoiree, $temathique, $dateSoiree, $horaireDebut, $idLieu);
+            $soiree = new Soiree($nomSoiree, $thematique, $dateSoiree, $horaireDebut, $idLieu);
+            $soiree->setId($s['idSoiree']);
             $soirees[] = $soiree;
         }
 
         return $soirees;
+    }
+
+    public function getTarifByIdSoiree(int $id){
+        $stmt = $this->pdo->prepare("SELECT tarif FROM soiree WHERE idSoiree=?");
+        $stmt->bindParam(1, $id);
+        $stmt->execute();
+        $tarif = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $tarif['tarif'];
     }
 
     public function getSpectacleFromId(int $idSpectacle): ?Spectacle
@@ -500,5 +508,32 @@ class NRVRepository{
         $stmt->bindParam(1, $idUser);
         $stmt->bindParam(2, $idSpectacle);
         $stmt->execute();
+    }
+
+    public function getSpectaclesBySoiree(int $idSoiree)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM spectacle INNER JOIN appartient ON spectacle.idSpectacle = appartient.idSpectacle WHERE idSoiree = ?");
+        $stmt->bindParam(1, $idSoiree);
+        $stmt->execute();
+        $spectacles = [];
+        while ($s = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $id = $s['idSpectacle'];
+            $titre = $s['titre'];
+            $description = $s['description'];
+            $video = $s['video'];
+            $horaire = $s['horaireSpec'];
+            $duree = $s['dureeSpec'];
+            $style = $s['idStyle'];
+
+            $images = $this->getImagesBySpectacle($id);
+            $artistes = $this->getArtistesBySpectacle($id);
+
+            $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style);
+            $spectacle->setId($id);
+            $spectacle->setImages($images);
+            $spectacle->setArtistes($artistes);
+            $spectacles[] = $spectacle;
+        }
+        return $spectacles;
     }
 }
