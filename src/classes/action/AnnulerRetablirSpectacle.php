@@ -24,10 +24,10 @@ class AnnulerRetablirSpectacle extends Action
         if ($spectacle) {
             // Basculer l'état d'annulation
             if ($spectacle->estAnnule) {
-                $spectacle->retablir();
+                $spectacle->changerAnnulation();
                 $message = "Le spectacle a été rétabli.";
             } else {
-                $spectacle->annuler();
+                $spectacle->changerAnnulation();
                 $message = "Le spectacle a été annulé.";
             }
 

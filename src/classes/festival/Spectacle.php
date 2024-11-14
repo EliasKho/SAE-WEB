@@ -15,17 +15,17 @@ class Spectacle
     private array $artistes;
     private bool $estAnnule;
 
-    public function __construct($titre, $description, $video, $horaireSpec, $dureeSpec, $idStyle, $estAnnule=false)
+    public function __construct($titre, $description, $video, $horaireSpec, $dureeSpec, $idStyle, $estAnnule=false, $idSpectacle=0, $images=[], $artistes=[])
     {
-        $this->idSpectacle = 0;
+        $this->idSpectacle = $idSpectacle;
         $this->titre = $titre;
         $this->description = $description;
         $this->video = $video;
         $this->horaireSpec = $horaireSpec;
         $this->dureeSpec = $dureeSpec;
         $this->idStyle = $idStyle;
-        $this->images = [];
-        $this->artistes = [];
+        $this->images = $images;
+        $this->artistes = $artistes;
         $this->estAnnule = $estAnnule;
     }
 
@@ -34,28 +34,9 @@ class Spectacle
         return $this->$name;
     }
 
-    public function setId(int $id)
+    public function changerAnnulation()
     {
-        $this->idSpectacle = $id;
-    }
-
-    public function setImages(array $images)
-    {
-        $this->images = $images;
-    }
-
-    public function setArtistes(array $artistes)
-    {
-        $this->artistes = $artistes;
-    }
-
-    public function annuler()
-    {
-        $this->estAnnule = true;
-    }
-
-    public function retablir(){
-        $this->estAnnule = false;
+        $this->estAnnule = !$this->estAnnule;
     }
 
 
