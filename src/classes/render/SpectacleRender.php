@@ -39,8 +39,14 @@ class SpectacleRender
             }
         }
 
-        // Affichage du label "ANNULÉ" si le spectacle est annulé
-        $annuleLabel = $estAnnule ? "<div class='annule'>ANNULÉ</div>" : "";
+        $img = "<img alt='image du spectacle' src='{$image}'>";
+        $containerId = "container" . $id;
+        if($estAnnule){
+            $img="<div id=".$containerId." class='image-container'></div>
+                    <script src='src/superposerImages.js'></script>
+                    <script>generateCompositeImage('".$image."' ,'img/annule.png','".$containerId."' );</script>";
+            $titre = $titre ." [ANNULÉ]";
+        }
 
         $buttonText = $estAnnule ? "Rétablir" : "Annuler";
 
@@ -63,9 +69,8 @@ class SpectacleRender
                     $btnModifSpec
                  </div>  
                 <a href = "index.php?action=display-spectacle&id=$id"><div class='spectacle'>
-                    <p>{$annuleLabel}</p>
                     <h2>{$titre}</h2>
-                    <img alt="image du spectacle" src='{$image}'>
+                    $img
                     <p>{$horaire}</p>
                     <p>{$duree}</p>
                 </div></a>
