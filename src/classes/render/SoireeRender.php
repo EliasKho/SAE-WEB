@@ -70,15 +70,15 @@ class SoireeRender
         $horaireDebut = filter_var($this->soiree->horaireDebut, FILTER_SANITIZE_SPECIAL_CHARS);
         $idLieu = filter_var($this->soiree->idLieu, FILTER_SANITIZE_SPECIAL_CHARS);
         $r = NRVRepository::getInstance();
-        $nomLieu = $r->getNomLieu($idLieu);
-        $i = $r->getImagesByLieu($idLieu);
+        $nomLieu = $r->getNomLieuFromId($idLieu);
+        $i = $r->getImagesFromLieuId($idLieu);
         $images="";
         foreach ($i as $image) {
             $image = filter_var($image, FILTER_SANITIZE_URL);
             $images .= "<img alt='image du lieu de la soiree' src='{$image}'>";
         }
         $tarif=filter_var($this->soiree->tarif, FILTER_SANITIZE_NUMBER_FLOAT);
-        $spectacles = $r->getSpectaclesBySoiree($this->soiree->idSoiree);
+        $spectacles = $r->getSpectaclesFromSoireeId($this->soiree->idSoiree);
 
         $addButton = "";
         $modifierButton = "";

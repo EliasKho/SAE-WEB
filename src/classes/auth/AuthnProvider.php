@@ -16,7 +16,7 @@ class AuthnProvider
         } else {
             $user = $r->getUserFromUsername($username);
         }
-        $userPass = $r->getPasswordFromUser($user);
+        $userPass = $r->getPasswordFromId($user->id);
 
         if (!password_verify($password, $userPass)) {
             throw new AuthnException("Mot de passe incorrect");
@@ -80,7 +80,7 @@ class AuthnProvider
         $r = NRVRepository::getInstance();
         if (isset($_COOKIE['preferences'])){
             $preferences = unserialize($_COOKIE['preferences']);
-            $userPrefs = $r->getPreferences($user->id);
+            $userPrefs = $r->getPreferencesFromUserId($user->id);
             foreach($preferences as $pref){
                 if (!in_array($pref, $userPrefs)) {
                     $r->ajouterPreference($user->id, $pref);

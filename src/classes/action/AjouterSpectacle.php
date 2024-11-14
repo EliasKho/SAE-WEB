@@ -112,7 +112,7 @@ class AjouterSpectacle extends Action{
         $artistes = $_POST['artistes'];
         
         $r = NRVRepository::getInstance();
-        $spectacle = $r->ajouterSpectacle($titre, $horaire, $duree, $description, $style, $images, $video);
+        $spectacle = $r->ajouterSpectacle($titre, $horaire, $duree, $description, $style, $video);
         $idSpec = $spectacle->idSpectacle;
 
         for($i = 0; $i < count($images['name']); $i++){

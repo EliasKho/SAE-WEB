@@ -2,6 +2,7 @@
 
 namespace iutnc\nrv\action;
 
+use iutnc\nrv\festival\Spectacle;
 use iutnc\nrv\repository\NRVRepository;
 
 class ModifierSpectacle extends Action
@@ -30,7 +31,7 @@ class ModifierSpectacle extends Action
 
         // Récupérer tous les artistes et ceux associés au spectacle
         $allArtistes = $repository->getAllArtistes(); // Retourne les noms des artistes
-        $spectacleArtistes = $repository->getArtistesBySpectacle($idSpectacle); // Retourne les noms des artistes associés
+        $spectacleArtistes = $repository->getArtistesFromSpectacleId($idSpectacle); // Retourne les noms des artistes associés
 
         $html = <<<FIN
             <h1>Modifier le spectacle</h1>
@@ -92,7 +93,9 @@ class ModifierSpectacle extends Action
         if (!$idSpectacle) {
             return "ID du spectacle manquant.";
         }
+        $r = NRVRepository::getInstance();
 
+        $annuler = (bool)$r->getSpectacleFromId($idSpectacle)->estAnnule;
         $titre = $_POST['titre'];
         $horaire = $_POST['horaire'];
         $duree = $_POST['duree'];
@@ -102,14 +105,11 @@ class ModifierSpectacle extends Action
         $video = $_POST['video'];
         $selectedArtistes = $_POST['artistes'] ?? []; // Liste des artistes sélectionnés (index)
 
-        $repository = NRVRepository::getInstance();
-        $repository->updateSpectacle($idSpectacle, $titre, $horaire, $duree, $description, $style, $images, $video);
+        $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style, $annuler, $idSpectacle);
 
-        // Mettre à jour les artistes associés au spectacle
-        $repository->deleteSpectacleArtistes($idSpectacle);
-        foreach ($selectedArtistes as $artisteId) {
-            $repository->lierSpectacleArtiste($idSpectacle, $artisteId);
-        }
+        $r->updateSpectacle($spectacle);
+        $r->updateSpectacleImages($idSpectacle, $images);
+        $r->updateSpectacleArtistes($idSpectacle, $selectedArtistes);
 
         return "Spectacle modifié avec succès.";
     }

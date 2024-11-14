@@ -13,7 +13,7 @@ class Preferences extends Action {
             $r = NRVRepository::getInstance();
             $user = unserialize($_SESSION['user']);
             $html = "<h1>Préférences</h1>";
-            $preferences = $r->getPreferences($user->id);
+            $preferences = $r->getPreferencesFromUserId($user->id);
             if (isset($_GET["idSpectacle"])){
                 $idSpectacle = $_GET["idSpectacle"];
                 if ($_GET["action2"] == "ajouter" && !in_array($idSpectacle, $preferences)){
@@ -23,7 +23,7 @@ class Preferences extends Action {
                     $r->supprimerPreference($user->id, $idSpectacle);
                 }
             }
-            $preferences = $r->getPreferences($user->id);
+            $preferences = $r->getPreferencesFromUserId($user->id);
             $html .= "<ul>";
             foreach ($preferences as $pref) {
                 $spectacle = $r->getSpectacleFromId($pref);

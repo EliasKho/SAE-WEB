@@ -12,7 +12,7 @@ class AjouterSpectacleSoiree extends Action {
         }
         $idSoiree = filter_var($_GET['idSoiree'], FILTER_SANITIZE_NUMBER_INT);
         $r = NRVRepository::getInstance();
-        $soiree = $r->getSoireeById($idSoiree);
+        $soiree = $r->getSoireeFromId($idSoiree);
         $titre = $soiree->nomSoiree;
 
         $html = <<<HTML
@@ -42,7 +42,7 @@ class AjouterSpectacleSoiree extends Action {
         $html="";
         $idSoiree = filter_var($_POST['idsoiree'], FILTER_SANITIZE_NUMBER_INT);
         $idSpectacle = filter_var($_POST['idspectacle'], FILTER_SANITIZE_NUMBER_INT);
-        $spectacles = $r->getSpectaclesBySoiree($idSoiree);
+        $spectacles = $r->getSpectaclesFromSoireeId($idSoiree);
         foreach ($spectacles as $spectacle) {
             if ($spectacle->idSpectacle == $idSpectacle) {
                 $html.= "Spectacle déjà présent dans la soirée,  <a href='?action=ajouter-spec-soiree&idSoiree={$idSoiree}'>veuillez réessayer</a><br><br>";
@@ -50,9 +50,9 @@ class AjouterSpectacleSoiree extends Action {
             }
         }
         if ($html == "") {
-            $r->ajouterSpectacleSoiree($idSoiree, $idSpectacle);
+            $r->lierSpectacleSoiree($idSoiree, $idSpectacle);
             $html.= '<h3>Spectacle ajouté à la soirée avec succès</h3><br><br>';
-            $sr = new SoireeRender($r->getSoireeById($idSoiree));
+            $sr = new SoireeRender($r->getSoireeFromId($idSoiree));
             $html.= $sr->renderFull();
         }
         return $html;

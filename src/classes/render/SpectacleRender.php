@@ -102,7 +102,7 @@ class SpectacleRender
         $id = intval($id);
 
         $idStyle = $this->spectacle->idStyle;
-        $style = NRVRepository::getInstance()->getStyleById($idStyle);
+        $style = NRVRepository::getInstance()->getStyleFromId($idStyle);
 
         // Affichage du label "ANNULÉ" si le spectacle est annulé
         $annuleLabel = $estAnnule ? "<div class='annule'>ANNULÉ</div>" : "";
@@ -113,7 +113,7 @@ class SpectacleRender
             $r = NRVRepository::getInstance();
             $user = unserialize($_SESSION['user']);
             $id = $user->id;
-            $preferences = $r->getPreferences($id);
+            $preferences = $r->getPreferencesFromUserId($id);
         }
         elseif (isset($_COOKIE["preferences"])) {
             $preferences = unserialize($_COOKIE["preferences"]);
@@ -154,7 +154,7 @@ class SpectacleRender
         $id = intval($id);
 
         $idStyle = $this->spectacle->idStyle;
-        $style = NRVRepository::getInstance()->getStyleById($idStyle);
+        $style = NRVRepository::getInstance()->getStyleFromId($idStyle);
 
         return <<<FIN
                 <a href = "index.php?action=display-spectacle&id=$id">
