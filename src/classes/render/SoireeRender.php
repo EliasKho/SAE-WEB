@@ -79,6 +79,19 @@ class SoireeRender
         }
         $tarif=$r->getTarifByIdSoiree($this->soiree->idSoiree);
         $spectacles = $r->getSpectaclesBySoiree($this->soiree->idSoiree);
+
+        $addButton = "";
+        $modifierButton = "";
+        try {
+            $user = AuthnProvider::getSignedInUser();
+            $authz = new Authz($user);
+            if ($authz->checkRole(User::$STAFF)) {
+                $addButton = "<a href='index.php?action=ajouter-spec-soiree&idSoiree={$this->soiree->idSoiree}' class='button'>Ajouter un spectacle</a>  ";
+                $modifierButton = "<a href='index.php?action=modifier-soiree&idSoiree={$this->soiree->idSoiree}' class='button'>Modifier la soirée</a>  ";
+            }
+        } catch (\Exception $e) {
+            // Aucun utilisateur connecté ou l'utilisateur n'est pas un staff
+        }
         $html= <<<FIN
                 <br>
                 <div class='soiree'>
@@ -92,12 +105,13 @@ class SoireeRender
                     <h1>Spectacles de la soiree</h1>
                 FIN;
         foreach ($spectacles as $spectacle) {
-            $html.="<p>---------------------------------------------------------------</p>";
+            $html.="<br><p>---------------------------------------------------------------</p>";
             $render = new SpectacleRender($spectacle);
             $html .= $render->renderSoiree();
-            $html.="<p>---------------------------------------------------------------</p><br>";
+            $html.="<p>---------------------------------------------------------------</p>";
         }
         $html .= <<<FIN
+                <p>{$addButton}</p>
                 </div>
                 FIN;
         return $html;

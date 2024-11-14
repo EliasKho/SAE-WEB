@@ -541,4 +541,11 @@ class NRVRepository{
         $soiree->setId($id);
         return $soiree;
     }
+
+    public function ajouterSpectacleSoiree(int $idSoiree,int $idSpectacle){
+        $stmt = $this->pdo->prepare("INSERT INTO appartient (idSoiree, idSpectacle) VALUES (?, ?)");
+        $stmt->bindParam(1, $idSoiree);
+        $stmt->bindParam(2, $idSpectacle);
+        $stmt->execute();
+    }
 }

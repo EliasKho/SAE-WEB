@@ -58,6 +58,9 @@ class Dispatcher
             case 'ModifSpectacle':
                 $act = new ACT\ModifierSpectacle();
                 break;
+            case 'ajouter-spec-soiree':
+                $act = new ACT\AjouterSpectacleSoiree();
+                break;
             default:
                 $act = new ACT\DefaultAction();
                 break;
