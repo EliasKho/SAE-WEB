@@ -11,18 +11,21 @@ use iutnc\nrv\repository\NRVRepository;
 use iutnc\nrv\user\User;
 use Exception;
 
+/**
+ * Action pour créer un staff
+ */
 class CreerStaff extends Action
 {
     /**
-     * @throws AuthnException
-     * @throws AuthorizationException
+     * formulaire pour ajouter un staff
      */
     protected function executeGet(): string
     {
+        // Vérification des droits, seul un admin peut ajouter un staff
         $user = AuthnProvider::getSignedInUser();
         $authz = new Authz($user);
         try {
-            $authz->checkRole(3);
+            $authz->checkRole(User::$ADMIN);
         } catch (AuthorizationException $e) {
             return $e->getMessage();
         }
@@ -40,17 +43,31 @@ class CreerStaff extends Action
         return $s;
     }
 
+    /**
+     * Création d'un staff
+     */
     protected function executePost(): string
     {
+        // Vérification des droits, seul un admin peut ajouter un staff
+        $user = AuthnProvider::getSignedInUser();
+        $authz = new Authz($user);
+        try {
+            $authz->checkRole(User::$ADMIN);
+        } catch (AuthorizationException $e) {
+            return $e->getMessage();
+        }
+        // Récupération des données du formulaire
         $username = $_POST["username"];
         $email = $_POST["email"];
         $password = $_POST["password"];
 
+        // Création du staff
         try {
             AuthnProvider::register($username,$email,$password,2);
         } catch (Exception $e) {
             return "Erreur lors de l'authentification : ".$e->getMessage();
         }
+        // Retourne un message de succès
         return "Inscription réussie";
     }
 }

@@ -5,22 +5,28 @@ namespace iutnc\nrv\action;
 use iutnc\nrv\festival\Spectacle;
 use iutnc\nrv\repository\NRVRepository;
 
-class ModifierSpectacle extends Action
-{
-    public function executeGet(): string
-    {
+/**
+ * Action permettant de modifier un spectacle.
+ */
+class ModifierSpectacle extends Action{
+
+    /**
+     * Récupère les informations du spectacle à modifier et les affiche dans un formulaire.
+     * @return string Le formulaire HTML.
+     */
+    public function executeGet(): string{
+        // Récupérer l'ID du spectacle à modifier depuis l'URL
         $idSpectacle = $_GET['idSpectacle'] ?? null;
         if (!$idSpectacle) {
             return "ID du spectacle manquant.";
         }
-
+        // Récupérer le spectacle à modifier
         $repository = NRVRepository::getInstance();
         $spectacle = $repository->getSpectacleFromId($idSpectacle);
-
+        // Vérifier que le spectacle existe
         if (!$spectacle) {
             return "Spectacle introuvable.";
         }
-
         // Préremplir le formulaire avec les données existantes du spectacle
         $titre = htmlspecialchars($spectacle->titre);
         $description = htmlspecialchars($spectacle->description);
@@ -56,6 +62,7 @@ class ModifierSpectacle extends Action
                 <select id='style' name='style' required>
         FIN;
 
+        // Ajouter les styles avec option sélectionnée pour le style du spectacle
         foreach ($styles as $key => $styleName) {
             $selected = ($key + 1 == $spectacle->idStyle) ? "selected" : "";
             $html .= "<option value='" . ($key + 1) . "' {$selected}>{$styleName}</option>";
@@ -83,18 +90,22 @@ class ModifierSpectacle extends Action
                 <input type="submit" value="Modifier">
             </form>
         FIN;
-
         return $html;
     }
 
+    /**
+     * Modifie le spectacle avec les informations reçues du formulaire.
+     * @return string Message de confirmation.
+     */
     public function executePost(): string
     {
+        // Récupérer l'ID du spectacle à modifier depuis l'URL
         $idSpectacle = $_GET['idSpectacle'] ?? null;
         if (!$idSpectacle) {
             return "ID du spectacle manquant.";
         }
+        // Récupérer les informations du formulaire
         $r = NRVRepository::getInstance();
-
         $annuler = (bool)$r->getSpectacleFromId($idSpectacle)->estAnnule;
         $titre = $_POST['titre'];
         $horaire = $_POST['horaire'];
@@ -103,14 +114,17 @@ class ModifierSpectacle extends Action
         $style = $_POST['style'];
         $images = $_FILES['images'];
         $video = $_POST['video'];
-        $selectedArtistes = $_POST['artistes'] ?? []; // Liste des artistes sélectionnés (index)
+        $selectedArtistes = $_POST['artistes'] ?? []; // Liste des artistes sélectionnés
 
+        // Créer un objet Spectacle avec les informations reçues
         $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style, $annuler, $idSpectacle);
 
+        // Mettre à jour le spectacle dans la base de données
         $r->updateSpectacle($spectacle);
+        // Mettre à jour les images et les artistes associés au spectacle
         $r->updateSpectacleImages($idSpectacle, $images);
         $r->updateSpectacleArtistes($idSpectacle, $selectedArtistes);
-
+        // Retourner un message de confirmation
         return "Spectacle modifié avec succès.";
     }
 }

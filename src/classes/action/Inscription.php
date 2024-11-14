@@ -8,22 +8,16 @@ use iutnc\nrv\repository\NRVRepository;
 use iutnc\nrv\user\User;
 use iutnc\nrv\auth\AuthnProvider;
 
+/**
+ * Class Inscription : Action d'inscription
+ */
 class Inscription extends Action {
 
-    public function checkPasswordStrength(string $pass, int $minimumLength = 8): bool
-    {
-        $length = strlen($pass) >= $minimumLength;
-        $digit = preg_match("#[0-9]#", $pass);
-        $special = preg_match("#[\W]#", $pass);
-        $lower = preg_match("#[a-z]#", $pass);
-        $upper = preg_match("#[A-Z]#", $pass);
-        return $length && $digit && $special && $lower && $upper;
-    }
-
-
+    /**
+     * Formulaire d'inscription
+     */
     protected function executeGet(): string
     {
-
         $s = '<div class="container">';
         $s .= "<h2>Inscription</h2>";
 
@@ -35,23 +29,28 @@ class Inscription extends Action {
                 <button type="submit">Valider</button>
                </form>';
         $s .= '</div>';
-
         return $s;
     }
 
+    /**
+     * Traitement de l'inscription
+     */
     protected function executePost(): string
     {
+        // Récupération des données du formulaire
         $username = $_POST["username"];
         $email = $_POST["email"];
         $password = $_POST["password"];
-
+        // on essaye de créer le compte
         try {
             AuthnProvider::register($username, $email, $password,1);
         } catch (AuthnException $e) {
+            // en cas d'erreur, on affiche un message d'erreur
             $message = $e->getMessage();
             echo "<script>window.onload = ()=>{window.alert('$message');};</script>";
             return "Erreur lors de l'inscription : ".$e->getMessage();
         }
+        // on affiche un message de succès
         return "Inscription réussie";
     }
 }

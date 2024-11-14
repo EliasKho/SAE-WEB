@@ -2,21 +2,31 @@
 
 namespace iutnc\nrv\action;
 
+use iutnc\nrv\auth\AuthnProvider;
 use iutnc\nrv\auth\Authz;
 use iutnc\nrv\exception\AuthorizationException;
 use iutnc\nrv\repository\NRVRepository;
 use Exception;
+use iutnc\nrv\user\User;
 
+/**
+ * Action permettant d'ajouter un spectacle.
+ */
 class AjouterSpectacle extends Action{
 
+    /**
+     * Formulaire d'ajout d'un spectacle
+     */
     public function executeGet() : string{
+        // Vérification des droits, seul le staff peut ajouter un spectacle
         try {
-            $authz = new AuthZ(unserialize($_SESSION["user"]));
-            $authz->checkRole(2);
+            $authz = new AuthZ(AuthnProvider::getSignedInUser());
+            $authz->checkRole(User::$STAFF);
         } catch (AuthorizationException $e) {
             return $e->getMessage();
         }
 
+        // Récupération des styles et artistes pour les formulaires
         $r = NRVRepository::getInstance();
         $styles = $r->getAllStyles();
         $artistes = $r->getAllArtistes();
@@ -40,7 +50,6 @@ class AjouterSpectacle extends Action{
                 <textarea id="description" name="description" required></textarea>
                 </br></br>
         FIN;
-
         $html.= "<label for='style'>Style du spectacle:</label>";
         $html.= "<select id='style' name='style' required>";
         for ($i = 1; $i <= count($styles); $i++) {
@@ -60,11 +69,13 @@ class AjouterSpectacle extends Action{
                 
                 <label>Artistes du spectacle:</label>
             FIN;
+        // Affichage des artistes sous forme de checkbox
         foreach ($artistes as $artiste) {
             $artisteNom = htmlspecialchars($artiste['nomArtiste']);
             $id = $artiste['idArtiste'];
             $html.="<label><input type='checkbox' id='artistes' name='artistes[]' value='$id'>". $artisteNom ."</label>";
         }
+        // création d'un petit script pour vérifier qu'au moins un artiste est sélectionné
         $html.= <<<FIN
                 </select>
                 </br></br>
@@ -91,17 +102,19 @@ class AjouterSpectacle extends Action{
 
     }
 
+    /**
+     * Ajout d'un spectacle dans la base de données
+     */
     public function executePost() : string{
-
+        // Vérification des droits, seul le staff peut ajouter un spectacle
         try {
-            $authz = new AuthZ(unserialize($_SESSION["user"]));
-            $authz->checkRole(2);
+            $authz = new AuthZ(AuthnProvider::getSignedInUser());
+            $authz->checkRole(User::$STAFF);
         } catch (AuthorizationException $e) {
             return $e->getMessage();
         }
 
-        $uploadDir = 'img/';
-
+        // Récupération des données du formulaire
         $titre = $_POST['titre'];
         $horaire = $_POST['horaire'];
         $duree = $_POST['duree'];
@@ -110,45 +123,19 @@ class AjouterSpectacle extends Action{
         $images = $_FILES['images'];
         $video = $_POST['video'];
         $artistes = $_POST['artistes'];
-        
+
+        // on ajoute le spectacle dans la base de données
         $r = NRVRepository::getInstance();
         $spectacle = $r->ajouterSpectacle($titre, $horaire, $duree, $description, $style, $video);
+        // on récupère l'id du spectacle ajouté
         $idSpec = $spectacle->idSpectacle;
 
-        for($i = 0; $i < count($images['name']); $i++){
-            // Vérification des erreurs d'upload
-            if ($images['error'][$i] !== UPLOAD_ERR_OK) {
-                return "Erreur lors de l'upload du fichier.". $images['error'][$i];
-            }
+        // On ajoute les images
+        $r->updateSpectacleImages($idSpec, $images);
 
-            // Récupération du nom et chemin temporaire du fichier
-            $nomFichier = $images['name'][$i];
-            $tmpName = $images['tmp_name'][$i];
-
-            // Vérification de l'extension du fichier
-            $extension = pathinfo($nomFichier, PATHINFO_EXTENSION);
-
-            $nomFichier = bin2hex(random_bytes(10)) . '.' . $extension;
-
-            $idImage = $r->ajouterImage($nomFichier);
-
-            // Nettoyage et déplacement du fichier
-            $nomFichier = $uploadDir . basename($nomFichier);
-            if (!move_uploaded_file($tmpName, $nomFichier)) {
-                return "Erreur lors du déplacement du fichier.";
-            }
-
-            $r->lierSpectacleImage($idSpec, $idImage);
-        }
-
-        foreach($artistes as $artiste){
-            if ($artiste == '') {
-                continue;
-            }
-            $r->lierSpectacleArtiste($idSpec, $artiste);
-        }
-
+        // On ajoute les artistes associés au spectacle
+        $r->updateSpectacleArtistes($idSpec, $artistes);
+        // On retourne un message de succès
         return 'Spectacle ajouté';
-
     }
 }

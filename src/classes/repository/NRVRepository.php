@@ -727,7 +727,7 @@ class NRVRepository{
      * @param string $lieu
      * @return array
      */
-    public function getSpectaclesByTri(string $date, string $style, string $lieu): array{
+    public function getSpectaclesFiltrés(string $date, string $style, string $lieu): array{
         // si les trois paramètres sont vides, on retourne tous les spectacles car aucun tri
         if ($date == "" && $style == "" && $lieu == "") {
             return $this->getAllSpectacles();

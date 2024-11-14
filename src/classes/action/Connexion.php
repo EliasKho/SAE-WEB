@@ -8,12 +8,13 @@ use iutnc\nrv\exception\CompteException;
 use iutnc\nrv\repository\NRVRepository;
 use iutnc\nrv\user\User;
 
-
+/**
+ * Classe Connexion qui permet de se connecter
+ */
 class Connexion extends Action {
 
     /**
-     * Methode qui s'execute quand le bouton est cliqué
-     * @return string
+     * Methode qui s'execute quand la page est chargée, affiche le formulaire de connexion
      */
     public function executeGet(): string {
         $form = '<div class="container">
@@ -28,16 +29,24 @@ class Connexion extends Action {
         return $form;
     }
 
+    /**
+     * Methode qui s'execute quand le bouton est cliqué
+     * @return string
+     */
     protected function executePost(): string
     {
+        // Récupération des données du formulaire
         $username = $_POST['Username'];
         $password = $_POST['Password'];
+        // On essaye de se connecter
         try {
             AuthnProvider::signin($username, $password);
         } catch (AuthnException $e) {
             return $e->getMessage();
         }
+        // On récupère l'utilisateur connecté
         $user = unserialize($_SESSION['user']);
+        // On retourne un message de bienvenue
         return "Vous êtes connecté, bienvenue " . $user->username;
     }
 }

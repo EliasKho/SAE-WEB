@@ -91,9 +91,6 @@ class SpectacleRender
         $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         $horaire = filter_var($this->spectacle->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
 
-        $idStyle = $this->spectacle->idStyle;
-        $style = NRVRepository::getInstance()->getStyleById($idStyle);
-
         $images = '';
         foreach ($this->spectacle->images as $image) {
             $image = filter_var($image, FILTER_SANITIZE_URL);

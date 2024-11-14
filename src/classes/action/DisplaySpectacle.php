@@ -9,26 +9,30 @@ use iutnc\nrv\repository\NRVRepository;
 class DisplaySpectacle extends Action{
 
     protected function executeGet(): string {
+        // Récupération du spectacle passé dans l'URL
         if (!isset($_GET['id'])){
             return 'Spectacle non trouvé';
         }
+        // Récupération du spectacle avec l'id passé en paramètre
         $r = NRVRepository::getInstance();
         $spectacle = $r->getSpectacleFromId($_GET['id']);
+        // on crée un objet SpectacleRender pour afficher le spectacle
         $render = new SpectacleRender($spectacle);
         $html = $render->renderFull();
-        // Ajout du formulaire caché pour filtrer par lieu
-        $r = NRVRepository::getInstance();
+
+        // on récupère les infos du spectacle pour afficher les boutons de recherche
         $infos = $r->getInfosFromSpectacleId($spectacle->idSpectacle);
         $lieu = $infos['idLieu'];
         $date = $infos['dateSoiree'];
         $style = $spectacle->idStyle;
 
-        $r = NRVRepository::getInstance();
+        // on récupère la soirée du spectacle pour l'afficher
         $soiree = $r->getSoireeFromSpectacleId($_GET['id']);
         $soiree = $r->getSoireeFromId($soiree);
         $soiree = new SoireeRender($soiree);
         $soiree = $soiree->renderFull();
 
+        // on utilise des formulaires cachés pour envoyer recherche des spectacles avec les mêmes infos
         $html .= <<<HTML
             <br>
             <form method="post" action="?action=spectacles" style="display:inline;">
@@ -57,13 +61,11 @@ class DisplaySpectacle extends Action{
         return $html;
     }
 
+    /**
+     * Methode post de la classe ne fait rien
+     */
     protected function executePost(): string {
-        if (isset($_POST['annuler_spectacle']) && isset($_POST['idSpectacle'])) {
-            $idSpectacle = $_POST['idSpectacle'];
-            $r = NRVRepository::getInstance();
-            $r->annulerSpectacle($idSpectacle);
-            return 'Spectacle annulé avec succès.';
-        }
+        // on redirige vers la page page get
         return $this->executeGet();
     }
 }
