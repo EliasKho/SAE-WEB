@@ -14,7 +14,7 @@ class Spectacles extends Action {
         list($html, $style, $lieu) = $this->form($r, $styles);
         foreach ($spectacles as $spectacle) {
             $render = new SpectacleRender($spectacle);
-            $html .= $render->renderCompact();
+            $html .= "<br>".$render->renderCompact();
         }
         return $html;
     }
@@ -58,7 +58,7 @@ class Spectacles extends Action {
         else {
             foreach ($spectacles as $spectacle) {
                 $render = new SpectacleRender($spectacle);
-                $html .= $render->renderCompact();
+                $html .= "<br>".$render->renderCompact();
             }
         }
         return $html;
