@@ -11,10 +11,10 @@ class AuthnProvider
     public static function signin(string $username, string $password): void
     {
         $r = NRVRepository::getInstance();
-        try {
-            $user = $r->getUserFromMail($username); // test si l'utilisateur se connecte avec son mail
-        }catch (AuthnException $e){
-            $user = $r->getUserFromUsername($username); // test si l'utilisateur se connecte avec son username
+        if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
+            $user = $r->getUserFromMail($username);
+        } else {
+            $user = $r->getUserFromUsername($username);
         }
         $userPass = $r->getPasswordFromUser($user);
 
@@ -31,18 +31,24 @@ class AuthnProvider
     {
         $r = NRVRepository::getInstance();
         try {
-            $user = $r->getUserFromMail($email);
-            $user = $r->getUserFromUsername($username);
+            $r->getUserFromMail($email);
+            throw new AuthnException("E");
         } catch (AuthnException $e) {
-            $user = null;
+            if ($e->getMessage() == "E") {
+                throw new AuthnException("Un utilisateur avec cet email existe déjà");
+            }
+            try{
+                $r->getUserFromUsername($username);
+                throw new AuthnException("U");
+            } catch (AuthnException $e) {
+                if ($e->getMessage() == "U") {
+                    throw new AuthnException("Un utilisateur avec ce nom d'utilisateur existe déjà");
+                }
+            }
         }
 
         if (strlen($password) < 10) { // password trop court
             throw new AuthnException("Mot de passe trop court (10 caractères minimum)");
-        }
-
-        if ($user != null) { // deja un utilisateur avec cet email
-            throw new AuthnException("Email déjà utilisé");
         }
 
         $password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);

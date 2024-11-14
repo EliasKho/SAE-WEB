@@ -56,16 +56,17 @@ class ModifierSpectacle extends Action
         FIN;
 
         foreach ($styles as $key => $styleName) {
-            $selected = ($key + 1 == $spectacle->style) ? "selected" : "";
+            $selected = ($key + 1 == $spectacle->idStyle) ? "selected" : "";
             $html .= "<option value='" . ($key + 1) . "' {$selected}>{$styleName}</option>";
         }
 
         // Ajouter les artistes avec cases à cocher et précocher ceux associés au spectacle
         $html .= "</select></br></br><label>Artistes du spectacle:</label>";
-        foreach ($allArtistes as $index => $artisteNom) {
-            $artisteNom = htmlspecialchars($artisteNom);
+        foreach ($allArtistes as $artiste) {
+            $artisteNom = htmlspecialchars($artiste['nomArtiste']);
+            $id = $artiste['idArtiste'];
             $checked = in_array($artisteNom, $spectacleArtistes) ? "checked" : "";
-            $html .= "<label><input type='checkbox' name='artistes[]' value='{$index}' {$checked}> {$artisteNom}</label> ";
+            $html .= "<label><input type='checkbox' name='artistes[]' value='{$id}' {$checked}> {$artisteNom}</label> ";
         }
 
         $html .= <<<FIN
@@ -106,9 +107,7 @@ class ModifierSpectacle extends Action
 
         // Mettre à jour les artistes associés au spectacle
         $repository->deleteSpectacleArtistes($idSpectacle);
-        foreach ($selectedArtistes as $index) {
-            $artisteNom = $repository->getAllArtistes()[$index]; // Récupérer le nom de l'artiste depuis l'index
-            $artisteId = $repository->getArtisteIdByName($artisteNom); // Méthode pour récupérer l'ID de l'artiste par nom
+        foreach ($selectedArtistes as $artisteId) {
             $repository->lierSpectacleArtiste($idSpectacle, $artisteId);
         }
 

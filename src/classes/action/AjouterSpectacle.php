@@ -60,8 +60,10 @@ class AjouterSpectacle extends Action{
                 
                 <label>Artistes du spectacle:</label>
             FIN;
-        for ($i = 1; $i <= count($artistes); $i++) {
-            $html.="<label><input type='checkbox' id='artistes' name='artistes[]' value='$i'>". $artistes[$i-1] ."</label>";
+        foreach ($artistes as $artiste) {
+            $artisteNom = htmlspecialchars($artiste['nomArtiste']);
+            $id = $artiste['idArtiste'];
+            $html.="<label><input type='checkbox' id='artistes' name='artistes[]' value='$id'>". $artisteNom ."</label>";
         }
         $html.= <<<FIN
                 </select>

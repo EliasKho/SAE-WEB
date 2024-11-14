@@ -18,10 +18,10 @@ class DisplaySpectacle extends Action{
         $html = $render->renderFull();
         // Ajout du formulaire caché pour filtrer par lieu
         $r = NRVRepository::getInstance();
-        $lieu = $r->getLieuFromSpectacle($spectacle->idSpectacle);
-        $style = $spectacle->style;
-        $style = $r->getIdByStyle($style);
-        $date = $r->getDateFromSpectacle($spectacle->idSpectacle);
+        $infos = $r->getInfosFromSpectacle($spectacle->idSpectacle);
+        $lieu = $infos['idLieu'];
+        $date = $infos['dateSoiree'];
+        $style = $spectacle->idStyle;
 
         $r = NRVRepository::getInstance();
         $soiree = $r->getSoireeBySpectacle($_GET['id']);

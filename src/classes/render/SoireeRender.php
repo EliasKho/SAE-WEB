@@ -77,7 +77,7 @@ class SoireeRender
             $image = filter_var($image, FILTER_SANITIZE_URL);
             $images .= "<img alt='image du lieu de la soiree' src='{$image}'>";
         }
-        $tarif=$r->getTarifByIdSoiree($this->soiree->idSoiree);
+        $tarif=filter_var($this->soiree->tarif, FILTER_SANITIZE_NUMBER_FLOAT);
         $spectacles = $r->getSpectaclesBySoiree($this->soiree->idSoiree);
 
         $addButton = "";

@@ -90,12 +90,14 @@ class SpectacleRender
         $video = "<iframe width='560' height='315' src='{$vid}' title='YouTube video player' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' referrerpolicy='strict-origin-when-cross-origin' allowfullscreen></iframe>";
         $titre = filter_var($this->spectacle->titre, FILTER_SANITIZE_SPECIAL_CHARS);
         $description = filter_var($this->spectacle->description, FILTER_SANITIZE_SPECIAL_CHARS);
-        $style = filter_var($this->spectacle->style, FILTER_SANITIZE_SPECIAL_CHARS);
         $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         $horaire = filter_var($this->spectacle->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         $estAnnule = filter_var($this->spectacle->estAnnule, FILTER_VALIDATE_BOOLEAN);
         $id = filter_var($this->spectacle->idSpectacle, FILTER_SANITIZE_SPECIAL_CHARS);
         $id = intval($id);
+
+        $idStyle = $this->spectacle->idStyle;
+        $style = NRVRepository::getInstance()->getStyleById($idStyle);
 
         // Affichage du label "ANNULÉ" si le spectacle est annulé
         $annuleLabel = $estAnnule ? "<div class='annule'>ANNULÉ</div>" : "";
@@ -143,9 +145,11 @@ class SpectacleRender
         $video = "<iframe width='560' height='315' src='{$vid}' title='YouTube video player' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' referrerpolicy='strict-origin-when-cross-origin' allowfullscreen></iframe>";
         $titre = filter_var($this->spectacle->titre, FILTER_SANITIZE_SPECIAL_CHARS);
         $description = filter_var($this->spectacle->description, FILTER_SANITIZE_SPECIAL_CHARS);
-        $style = filter_var($this->spectacle->style, FILTER_SANITIZE_SPECIAL_CHARS);
         $id = filter_var($this->spectacle->idSpectacle, FILTER_SANITIZE_SPECIAL_CHARS);
         $id = intval($id);
+
+        $idStyle = $this->spectacle->idStyle;
+        $style = NRVRepository::getInstance()->getStyleById($idStyle);
 
         return <<<FIN
                 <a href = "index.php?action=display-spectacle&id=$id">

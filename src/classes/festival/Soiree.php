@@ -9,15 +9,17 @@ class Soiree
     private string $temathique;
     private string $dateSoiree;
     private string $horaireDebut;
+    private float $tarif;
     private $idLieu;
 
-    public function __construct($nomSoiree, $temathique, $dateSoiree, $horaireDebut, $idLieu)
+    public function __construct(string $nomSoiree,string $temathique,string $dateSoiree,string $horaireDebut,float $tarif,int $idLieu)
     {
         $this->idSoiree = 0;
         $this->nomSoiree = $nomSoiree;
         $this->temathique = $temathique;
         $this->dateSoiree = $dateSoiree;
         $this->horaireDebut = $horaireDebut;
+        $this->tarif = $tarif;
         $this->idLieu = $idLieu;
     }
 

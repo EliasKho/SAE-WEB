@@ -10,12 +10,12 @@ class Spectacle
     private string $video;
     private string $horaireSpec;
     private string $dureeSpec;
-    private string $style;
+    private int $idStyle;
     private array $images;
     private array $artistes;
     private bool $estAnnule;
 
-    public function __construct($titre, $description, $video, $horaireSpec, $dureeSpec, $style, $estAnnule=false)
+    public function __construct($titre, $description, $video, $horaireSpec, $dureeSpec, $idStyle, $estAnnule=false)
     {
         $this->idSpectacle = 0;
         $this->titre = $titre;
@@ -23,7 +23,7 @@ class Spectacle
         $this->video = $video;
         $this->horaireSpec = $horaireSpec;
         $this->dureeSpec = $dureeSpec;
-        $this->style = $style;
+        $this->idStyle = $idStyle;
         $this->images = [];
         $this->artistes = [];
         $this->estAnnule = $estAnnule;

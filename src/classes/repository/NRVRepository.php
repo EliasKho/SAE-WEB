@@ -47,21 +47,7 @@ class NRVRepository{
         $stmt->execute();
         while ($s = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $id = $s['idSpectacle'];
-            $titre = $s['titre'];
-            $description = $s['description'];
-            $video = $s['video'];
-            $horaire = $s['horaireSpec'];
-            $duree = $s['dureeSpec'];
-            $style = $s['nomStyle'];
-
-            $images = $this->getImagesBySpectacle($id);
-            $artistes = $this->getArtistesBySpectacle($id);
-            $annule = $this->getAnnuleBySpectacle($id);
-
-            $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style, $annule);
-            $spectacle->setId($id);
-            $spectacle->setImages($images);
-            $spectacle->setArtistes($artistes);
+            $spectacle = $this->getSpectacleFromId($id);
             $spectacles[] = $spectacle;
         }
 
@@ -116,20 +102,7 @@ class NRVRepository{
         $spectacles = [];
         while ($s = $requete->fetch(\PDO::FETCH_ASSOC)) {
             $id = $s['idSpectacle'];
-            $titre = $s['titre'];
-            $description = $s['description'];
-            $video = $s['video'];
-            $horaire = $s['horaireSpec'];
-            $duree = $s['dureeSpec'];
-            $style = $s['idStyle'];
-
-            $images = $this->getImagesBySpectacle($id);
-            $artistes = $this->getArtistesBySpectacle($id);
-
-            $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style);
-            $spectacle->setId($id);
-            $spectacle->setImages($images);
-            $spectacle->setArtistes($artistes);
+            $spectacle = $this->getSpectacleFromId($id);
             $spectacles[] = $spectacle;
         }
         return $spectacles;
@@ -219,14 +192,6 @@ class NRVRepository{
         return $artistes;
     }
 
-    public function getAnnuleBySpectacle(int $id): bool {
-        $stmt = $this->pdo->prepare("SELECT estAnnule FROM spectacle WHERE idSpectacle = ?");
-        $stmt->bindParam(1, $id);
-        $stmt->execute();
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return (bool) $result['estAnnule'];
-    }
-
     public function inscription(User $user, string $password, int $role):User{
         $username = $user->username;
         $email = $user->email;
@@ -303,10 +268,7 @@ class NRVRepository{
     public function getAllArtistes(){
         $stmt = $this->pdo->prepare("SELECT * FROM artiste");
         $stmt->execute();
-        $artistes = [];
-        while ($a = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $artistes[] = $a['nomArtiste'];
-        }
+        $artistes = $stmt->fetchAll();
         return $artistes;
     }
 
@@ -346,9 +308,10 @@ class NRVRepository{
             $thematique = $s['thematique'];
             $dateSoiree = $s['dateSoiree'];
             $horaireDebut = $s['horaireDebut'];
+            $tarif = $s['tarif'];
             $idLieu = $s['idLieu'];
 
-            $soiree = new Soiree($nomSoiree, $thematique, $dateSoiree, $horaireDebut, $idLieu);
+            $soiree = new Soiree($nomSoiree, $thematique, $dateSoiree, $horaireDebut, $tarif, $idLieu);
             $soiree->setId($s['idSoiree']);
             $soirees[] = $soiree;
         }
@@ -356,17 +319,9 @@ class NRVRepository{
         return $soirees;
     }
 
-    public function getTarifByIdSoiree(int $id){
-        $stmt = $this->pdo->prepare("SELECT tarif FROM soiree WHERE idSoiree=?");
-        $stmt->bindParam(1, $id);
-        $stmt->execute();
-        $tarif = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $tarif['tarif'];
-    }
-
     public function getSpectacleFromId(int $idSpectacle): ?Spectacle
     {
-        $query = "SELECT * FROM spectacle INNER JOIN style ON spectacle.idStyle = style.idStyle WHERE idSpectacle = :id";
+        $query = "SELECT * FROM spectacle WHERE idSpectacle = :id";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute(['id' => $idSpectacle]);
 
@@ -379,11 +334,11 @@ class NRVRepository{
             $video = $s['video'];
             $horaire = $s['horaireSpec'];
             $duree = $s['dureeSpec'];
-            $style = $s['nomStyle'];
+            $style = $s['idStyle'];
+            $annule = (bool)$s['estAnnule'];
 
             $images = $this->getImagesBySpectacle($id);
             $artistes = $this->getArtistesBySpectacle($id);
-            $annule = $this->getAnnuleBySpectacle($id);
 
             $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style, $annule);
             $spectacle->setId($id);
@@ -445,40 +400,11 @@ class NRVRepository{
         $stmt->execute();
     }
 
-
-    public function getArtisteIdByName(string $nomArtiste): ?int
-    {
-        $stmt = $this->pdo->prepare("SELECT idArtiste FROM ARTISTE WHERE nomArtiste = ?");
-        $stmt->execute([$nomArtiste]);
-        $result = $stmt->fetchColumn();
-
-        return $result ? (int) $result : null;
-    }
-
-    public function getLieuFromSpectacle(int $idSpectacle): int
-    {
-        $stmt = $this->pdo->prepare("SELECT idLieu from soiree INNER JOIN appartient ON soiree.idSoiree = appartient.idSoiree WHERE idSpectacle = ?");
+    public function getInfosFromSpectacle($idSpectacle){
+        $stmt = $this->pdo->prepare("SELECT * FROM soiree INNER JOIN appartient ON soiree.idSoiree = appartient.idSoiree WHERE idSpectacle = ?");
         $stmt->bindParam(1, $idSpectacle);
         $stmt->execute();
-        $result = $stmt->fetchColumn();
-        return (int)$result;
-    }
-
-    public function getIdByStyle(string $style): int
-    {
-        $stmt = $this->pdo->prepare("SELECT idStyle FROM style WHERE nomStyle = ?");
-        $stmt->bindParam(1, $style);
-        $stmt->execute();
-        $result = $stmt->fetchColumn();
-        return (int)$result;
-    }
-
-    public function getDateFromSpectacle(int $idSpectacle): string
-    {
-        $stmt = $this->pdo->prepare("SELECT dateSoiree from soiree INNER JOIN appartient ON soiree.idSoiree = appartient.idSoiree WHERE idSpectacle = ?");
-        $stmt->bindParam(1, $idSpectacle);
-        $stmt->execute();
-        $result = $stmt->fetchColumn();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result;
     }
 
@@ -537,7 +463,7 @@ class NRVRepository{
         $stmt->bindParam(1, $id);
         $stmt->execute();
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $soiree = new Soiree($result['nomSoiree'], $result['thematique'], $result['dateSoiree'], $result['horaireDebut'], $result['idLieu']);
+        $soiree = new Soiree($result['nomSoiree'], $result['thematique'], $result['dateSoiree'], $result['horaireDebut'], $result['tarif'], $result['idLieu']);
         $soiree->setId($id);
         return $soiree;
     }
@@ -547,5 +473,13 @@ class NRVRepository{
         $stmt->bindParam(1, $idSoiree);
         $stmt->bindParam(2, $idSpectacle);
         $stmt->execute();
+    }
+
+    public function getStyleById(int $idStyle) : string{
+        $stmt = $this->pdo->prepare("SELECT nomStyle FROM style WHERE idStyle = ?");
+        $stmt->bindParam(1, $idStyle);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['nomStyle'];
     }
 }
