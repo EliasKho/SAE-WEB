@@ -82,3 +82,7 @@ nav ul li {
     transform: rotate(-20deg);
     opacity: 0.8;
 }
+
+a {
+    text-decoration: none;
+}

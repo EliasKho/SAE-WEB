@@ -92,15 +92,14 @@ class SoireeRender
                     <h1>Spectacles de la soiree</h1>
                 FIN;
         foreach ($spectacles as $spectacle) {
+            $html.="<p>---------------------------------------------------------------</p>";
             $render = new SpectacleRender($spectacle);
-            $html .= $render->renderFull();
+            $html .= $render->renderSoiree();
+            $html.="<p>---------------------------------------------------------------</p><br>";
         }
         $html .= <<<FIN
-                <p>---------------------------------------------------------------</p><br>
-                <p>---------------------------------------------------------------</p>
                 </div>
                 FIN;
-//                FIN;
         return $html;
     }
 }

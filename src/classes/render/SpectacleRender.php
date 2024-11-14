@@ -5,6 +5,7 @@ namespace iutnc\nrv\render;
 use iutnc\nrv\festival\Spectacle;
 use iutnc\nrv\auth\AuthnProvider;
 use iutnc\nrv\auth\Authz;
+use iutnc\nrv\repository\NRVRepository;
 use iutnc\nrv\user\User;
 use iutnc\nrv\exception\AuthnException;
 
@@ -19,6 +20,7 @@ class SpectacleRender
 
     public function renderCompact(): string
     {
+        //Affichage compact d’un spectacle : titre, image, horaire, durée
         $id=filter_var($this->spectacle->idSpectacle, FILTER_SANITIZE_NUMBER_INT);
         $image = filter_var($this->spectacle->images[0], FILTER_SANITIZE_URL);
         $titre = filter_var($this->spectacle->titre, FILTER_SANITIZE_SPECIAL_CHARS);
@@ -99,27 +101,63 @@ class SpectacleRender
         $annuleLabel = $estAnnule ? "<div class='annule'>ANNULÉ</div>" : "";
 
         $btnPref = "<a href='index.php?action=preferences&action2=ajouter&idSpectacle=$id' class='button'>Ajouter à mes préférences</a>";
-        if (isset($_COOKIE["preferences"])) {
+        $preferences = [];
+        if (isset($_SESSION['user'])){
+            $r = NRVRepository::getInstance();
+            $user = unserialize($_SESSION['user']);
+            $id = $user->id;
+            $preferences = $r->getPreferences($id);
+        }
+        elseif (isset($_COOKIE["preferences"])) {
             $preferences = unserialize($_COOKIE["preferences"]);
             // Si l'ID du spectacle est dans le cookie, définir le bouton "Voir mes préférences"
-            if (in_array($id, $preferences)) {
-                $btnPref = "<a href='index.php?action=preferences' class='button'>Voir mes préférences</a>";
-            }
         }
-
+        if (in_array($id, $preferences)) {
+            $btnPref = "<a href='index.php?action=preferences' class='button'>Voir mes préférences</a>";
+        }
         return <<<FIN
                 <div class='spectacle'>
-                    {$annuleLabel}
+                    {$annuleLabel}                
                     <h2>{$titre}</h2>
-                    <h3>Artistes : </h3>
                     $btnPref
+                    <h3>Artistes : </h3>                   
                     <p>{$artistes}</br></p>
                     <p>{$description}</p>
                     <p>{$style}</p>
                     <p>{$duree}</p>
                     <p>{$horaire}</p>
                     <p>{$video}</p>
-                    <p>{$images}</p>
+                    <p>{$images}</p>                                        
+                FIN;
+    }
+
+    public function renderSoiree()
+    {
+        //Affichage pour une soiree : titre, artistes, description, style de musique, vidéo
+        $artistes = '';
+        foreach ($this->spectacle->artistes as $artiste) {
+            $artiste = filter_var($artiste, FILTER_SANITIZE_SPECIAL_CHARS);
+            $artistes .= "<p>{$artiste}</p>";
+        }
+        $vid = filter_var($this->spectacle->video, FILTER_SANITIZE_URL);
+        $video = "<iframe width='560' height='315' src='{$vid}' title='YouTube video player' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' referrerpolicy='strict-origin-when-cross-origin' allowfullscreen></iframe>";
+        $titre = filter_var($this->spectacle->titre, FILTER_SANITIZE_SPECIAL_CHARS);
+        $description = filter_var($this->spectacle->description, FILTER_SANITIZE_SPECIAL_CHARS);
+        $style = filter_var($this->spectacle->style, FILTER_SANITIZE_SPECIAL_CHARS);
+        $id = filter_var($this->spectacle->idSpectacle, FILTER_SANITIZE_SPECIAL_CHARS);
+        $id = intval($id);
+
+        return <<<FIN
+                <a href = "index.php?action=display-spectacle&id=$id">
+                <div class='spectacle'>
+                    <h2>{$titre}</h2>
+                    <h3>Artistes : </h3>
+                    <p>{$artistes}</br></p>
+                    <p>{$description}</p>
+                    <p>{$style}</p>
+                    <p>{$video}</p>
+                </div>
+                </a>
                 FIN;
     }
 

@@ -2,6 +2,7 @@
 
 namespace iutnc\nrv\action;
 //affichage d'un spectacle en particulier (détaillé)
+use iutnc\nrv\render\SoireeRender;
 use iutnc\nrv\render\SpectacleRender;
 use iutnc\nrv\repository\NRVRepository;
 
@@ -21,6 +22,13 @@ class DisplaySpectacle extends Action{
         $style = $spectacle->style;
         $style = $r->getIdByStyle($style);
         $date = $r->getDateFromSpectacle($spectacle->idSpectacle);
+
+        $r = NRVRepository::getInstance();
+        $soiree = $r->getSoireeBySpectacle($_GET['id']);
+        $soiree = $r->getSoireeById($soiree);
+        $soiree = new SoireeRender($soiree);
+        $soiree = $soiree->renderFull();
+
         $html .= <<<HTML
             <br>
             <form method="post" action="?action=spectacles" style="display:inline;">
@@ -39,6 +47,10 @@ class DisplaySpectacle extends Action{
                 <input type="hidden" name="date" value="{$date}">
                 <button type="submit" class="button">Voir les spectacles à la même date</button>
             </form> 
+            <br>
+            </br>
+                <h2>Détail de la soiree :</h2>
+                <p>$soiree</p>                
         HTML;
 
         $html .= "</div>";

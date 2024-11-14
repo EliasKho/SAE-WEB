@@ -512,28 +512,33 @@ class NRVRepository{
 
     public function getSpectaclesBySoiree(int $idSoiree)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM spectacle INNER JOIN appartient ON spectacle.idSpectacle = appartient.idSpectacle WHERE idSoiree = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM appartient WHERE idSoiree = ?");
         $stmt->bindParam(1, $idSoiree);
         $stmt->execute();
         $spectacles = [];
         while ($s = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $id = $s['idSpectacle'];
-            $titre = $s['titre'];
-            $description = $s['description'];
-            $video = $s['video'];
-            $horaire = $s['horaireSpec'];
-            $duree = $s['dureeSpec'];
-            $style = $s['idStyle'];
-
-            $images = $this->getImagesBySpectacle($id);
-            $artistes = $this->getArtistesBySpectacle($id);
-
-            $spectacle = new Spectacle($titre, $description, $video, $horaire, $duree, $style);
-            $spectacle->setId($id);
-            $spectacle->setImages($images);
-            $spectacle->setArtistes($artistes);
+            $spectacle = $this->getSpectacleFromId($s['idSpectacle']);
             $spectacles[] = $spectacle;
         }
         return $spectacles;
+    }
+
+    public function getSoireeBySpectacle(int $idSpectacle): int
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM appartient WHERE idSpectacle = ?");
+        $stmt->bindParam(1, $idSpectacle);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['idSoiree'];
+    }
+
+    public function getSoireeById($id):Soiree{
+        $stmt = $this->pdo->prepare("SELECT * FROM soiree WHERE idSoiree =?");
+        $stmt->bindParam(1, $id);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $soiree = new Soiree($result['nomSoiree'], $result['thematique'], $result['dateSoiree'], $result['horaireDebut'], $result['idLieu']);
+        $soiree->setId($id);
+        return $soiree;
     }
 }
