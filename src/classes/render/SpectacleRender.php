@@ -39,6 +39,12 @@ class SpectacleRender{
         $titre = filter_var($this->spectacle->titre, FILTER_SANITIZE_SPECIAL_CHARS);
         $horaire = filter_var($this->spectacle->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
         $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
+        $duree = intval($duree);
+        $heure = floor($duree/60);
+        $min = $duree%60;
+        if($min<10)
+            $min = "0".$min;
+
         // Vérifier si le spectacle est annulé
         $estAnnule = filter_var($this->spectacle->estAnnule, FILTER_VALIDATE_BOOLEAN);
         $btnAnnuler = "";
@@ -99,7 +105,7 @@ class SpectacleRender{
                     <h2>{$titre}</h2>
                     $img
                     <p>Horaire de début : {$horaire}</p>
-                    <p>Durée : {$duree}</p>
+                    <p>Durée : {$heure}h$min</p>
                 </div></a>
                 FIN;
     }
@@ -116,6 +122,11 @@ class SpectacleRender{
 
         $description = filter_var($this->spectacle->description, FILTER_SANITIZE_SPECIAL_CHARS);
         $duree = filter_var($this->spectacle->dureeSpec, FILTER_SANITIZE_SPECIAL_CHARS);
+        $duree = intval($duree);
+        $heure = floor($duree/60);
+        $min = $duree%60;
+        if($min<10)
+            $min = "0".$min;
         $horaire = filter_var($this->spectacle->horaireSpec, FILTER_SANITIZE_SPECIAL_CHARS);
 
         // Générer les images du spectacle
@@ -126,9 +137,6 @@ class SpectacleRender{
             $containerId = "container" . $id;
             // Si le spectacle est annulé, superposer l'image avec l'image "ANNULÉ", et ajouter le label "ANNULÉ" au titre
             if($estAnnule){
-                $img="<div id=".$containerId." class='image-container'></div>
-                    <script src='src/superposerImages.js'></script>
-                    <script>generateCompositeImage('".$image."' ,'img/annule.png','".$containerId."' );</script>";
                 $titre = $titre ." [ANNULÉ]";
             }
             $images .= $img;
@@ -172,7 +180,7 @@ class SpectacleRender{
                     <p>{$artistes}</br></p>
                     <p>Description : {$description}</p>
                     <p>Style : {$style}</p>
-                    <p>Durée : {$duree}</p>
+                    <p>Durée : {$heure}h$min</p>
                     <p>Horaire de début : {$horaire}</p>
                     <p>Video : <br>{$video}</p>
                     <p>Images : <br>{$images}</p>                                        
