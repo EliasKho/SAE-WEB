@@ -91,8 +91,8 @@ class SoireeRender{
         }
         // On affiche les boutons pour ajouter un spectacle
         $html .= <<<FIN
-                <p>{$addButton}</p>
-                <p>{$modifierButton}</p>
+                <p>{$addButton}
+                {$modifierButton}</p>
                 </div>
                 FIN;
         return $html;

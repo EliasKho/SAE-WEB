@@ -98,8 +98,8 @@ class SpectacleRender{
                 <a href = "index.php?action=display-spectacle&id=$id"><div class='spectacle'>
                     <h2>{$titre}</h2>
                     $img
-                    <p>{$horaire}</p>
-                    <p>{$duree}</p>
+                    <p>Horaire de début : {$horaire}</p>
+                    <p>Durée : {$duree}</p>
                 </div></a>
                 FIN;
     }
@@ -170,12 +170,12 @@ class SpectacleRender{
                     $btnPref
                     <h3>Artistes : </h3>                   
                     <p>{$artistes}</br></p>
-                    <p>{$description}</p>
-                    <p>{$style}</p>
-                    <p>{$duree}</p>
-                    <p>{$horaire}</p>
-                    <p>{$video}</p>
-                    <p>{$images}</p>                                        
+                    <p>Description : {$description}</p>
+                    <p>Style : {$style}</p>
+                    <p>Durée : {$duree}</p>
+                    <p>Horaire de début : {$horaire}</p>
+                    <p>Video : <br>{$video}</p>
+                    <p>Images : <br>{$images}</p>                                        
                 FIN;
     }
 
@@ -217,9 +217,9 @@ class SpectacleRender{
                     <h2>{$titre}</h2>
                     <h3>Artistes : </h3>
                     <p>{$artistes}</br></p>
-                    <p>{$description}</p>
-                    <p>{$style}</p>
-                    <p>{$video}</p>
+                    <p>Description : {$description}</p>
+                    <p>Style : {$style}</p>
+                    <p>Vidéo : <br>{$video}</p>
                 </div>
                 </a>
                 FIN;
@@ -258,7 +258,7 @@ class SpectacleRender{
                  </div>  
                 <a href = "index.php?action=display-spectacle&id=$id"><div class='spectacle'>
                     <h2>{$titre}</h2>
-                    $img
+                    <p>$img</p>
                 </div></a>
                 <br>
                 FIN;
