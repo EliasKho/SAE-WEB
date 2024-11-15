@@ -63,7 +63,7 @@ class AjouterSpectacle extends Action{
                 <input type="file" id="images" name="images[]" multiple required>
                 </br></br>
                 
-                <label for="video">Vidéo du spectacle (lien vers la vidéo):</label>
+                <label for="video">Vidéo du spectacle (lien vers la vidéo YouTube):</label>
                 <input type="text" id="video" name="video" required>       
                 </br></br>       
                 
@@ -122,6 +122,8 @@ class AjouterSpectacle extends Action{
         $style = $_POST['style'];
         $images = $_FILES['images'];
         $video = $_POST['video'];
+        // remplacer watch?v= par embed/ pour avoir le lien de la vidéo
+        $video = str_replace("watch?v=", "embed/", $video);
         $artistes = $_POST['artistes'];
 
         // on ajoute le spectacle dans la base de données
