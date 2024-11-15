@@ -222,7 +222,7 @@ class SpectacleRender{
         // Générer le code HTML
         return <<<FIN
                 <a href = "index.php?action=display-spectacle&id=$id">
-                <div class='centre'>
+                <div class='spectacle'>
                     <h2>{$titre}</h2>
                     <h3>Artistes : </h3>
                     <p>{$artistes}</br></p>
