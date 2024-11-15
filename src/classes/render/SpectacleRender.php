@@ -173,7 +173,7 @@ class SpectacleRender{
 
         // Générer le code HTML
         return <<<FIN
-                <div class='spectacle'>            
+                <div class='centre'>            
                     <h2>{$titre}</h2>
                     $btnPref
                     <h3>Artistes : </h3>                   
@@ -221,7 +221,7 @@ class SpectacleRender{
         // Générer le code HTML
         return <<<FIN
                 <a href = "index.php?action=display-spectacle&id=$id">
-                <div class='spectacle'>
+                <div class='centre'>
                     <h2>{$titre}</h2>
                     <h3>Artistes : </h3>
                     <p>{$artistes}</br></p>
