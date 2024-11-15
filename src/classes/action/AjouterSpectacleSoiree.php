@@ -51,7 +51,7 @@ class AjouterSpectacleSoiree extends Action {
         }
         $html .= <<<HTML
                 </select>
-                <button type="submit" class="button">Ajouter</button>
+                <button type="submit">Ajouter</button>
             </form>
         HTML;
         return $html;

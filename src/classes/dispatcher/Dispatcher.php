@@ -70,6 +70,9 @@ class Dispatcher {
             case 'ajouter-spec-soiree':
                 $act = new ACT\AjouterSpectacleSoiree();
                 break;
+            case 'modifier-soiree':
+                $act = new ACT\ModifierSpectacleSoiree();
+                break;
             default:
                 $act = new ACT\DefaultAction();
                 break;

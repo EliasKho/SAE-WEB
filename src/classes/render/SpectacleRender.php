@@ -50,8 +50,8 @@ class SpectacleRender{
         if (isset($_SESSION['user'])){
             $r = NRVRepository::getInstance();
             $user = unserialize($_SESSION['user']);
-            $id = $user->id;
-            $preferences = $r->getPreferencesFromUserId($id);
+            $idUser = $user->id;
+            $preferences = $r->getPreferencesFromUserId($idUser);
         }
         // Si l'utilisateur n'est pas connecté, récupérer ses préférences depuis les cookies
         elseif (isset($_COOKIE["preferences"])) {
@@ -65,6 +65,7 @@ class SpectacleRender{
         // Générer l'image du spectacle avec l'image de base
         $img = "<img alt='image du spectacle' src='{$image}'>";
         $containerId = "container" . $id;
+
         // Si le spectacle est annulé, superposer l'image avec l'image "ANNULÉ", et ajouter le label "ANNULÉ" au titre
         if($estAnnule){
             $img="<div id=".$containerId." class='image-container'></div>

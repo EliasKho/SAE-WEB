@@ -350,6 +350,20 @@ class NRVRepository{
         $stmt->execute();
     }
 
+    /**
+     * Fonction qui permet de supprimer un spectacle d'une soirée
+     * @param int $idSpectacle
+     * @param int $idSoiree
+     */
+    public function deleteSpectacleSoiree($idSpectacle, $idSoiree){
+        // on prépare une requête
+        $stmt = $this->pdo->prepare("DELETE FROM appartient WHERE idSpectacle = ? AND idSoiree = ?");
+        $stmt->bindParam(1, $idSpectacle);
+        $stmt->bindParam(2, $idSoiree);
+        // on exécute la requête
+        $stmt->execute();
+    }
+
 
     // fonctions de mise à jour
 

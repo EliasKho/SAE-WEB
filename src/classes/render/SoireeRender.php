@@ -50,8 +50,7 @@ class SoireeRender{
             $image = filter_var($image, FILTER_SANITIZE_URL);
             $images .= "<img alt='image du lieu de la soiree' src='{$image}'>";
         }
-        // On filtre les données pour éviter les attaques XSS
-        $tarif=filter_var($this->soiree->tarif, FILTER_SANITIZE_NUMBER_FLOAT);
+        $tarif=filter_var($this->soiree->tarif, FILTER_SANITIZE_SPECIAL_CHARS, FILTER_FLAG_ALLOW_FRACTION);
         // On récupère les spectacles de la soirée
         $spectacles = $r->getSpectaclesFromSoireeId($this->soiree->idSoiree);
 
@@ -91,6 +90,7 @@ class SoireeRender{
         // On affiche les boutons pour ajouter un spectacle
         $html .= <<<FIN
                 <p>{$addButton}</p>
+                <p>{$modifierButton}</p>
                 </div>
                 FIN;
         return $html;
