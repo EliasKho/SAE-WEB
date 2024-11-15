@@ -47,7 +47,8 @@ class AjouterSpectacleSoiree extends Action {
         // liste des spectacles pouvant être ajoutés
         $spectacles = $r->getAllSpectacles();
         foreach ($spectacles as $spectacle) {
-            $html .= "<option value='{$spectacle->idSpectacle}'>{$spectacle->titre}</option>";
+            $html .= "<option value='".filter_var($spectacle->idSpectacle,FILTER_SANITIZE_NUMBER_INT).
+                "'>".htmlspecialchars($spectacle->titre,ENT_QUOTES,'UTF-8')."</option>";
         }
         $html .= <<<HTML
                 </select>
