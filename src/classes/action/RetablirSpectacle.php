@@ -7,7 +7,7 @@ use iutnc\nrv\auth\Authz;
 use iutnc\nrv\exception\AuthorizationException;
 use iutnc\nrv\repository\NRVRepository;
 use iutnc\nrv\festival\Spectacle;
-use iutnc\nrv\action\Spectacles;
+use iutnc\nrv\action\DisplayAllSpectacles;
 use iutnc\nrv\action as ACT;
 use iutnc\nrv\user\User;
 
@@ -51,7 +51,7 @@ class RetablirSpectacle extends Action
                 echo "<script>window.onload = ()=>{window.alert('$message');};</script>";
             }
             // Rediriger vers la liste des spectacles
-            $act = new ACT\Spectacles();
+            $act = new ACT\DisplayAllSpectacles();
             return $act();
         }
         return "Spectacle introuvable.";

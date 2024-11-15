@@ -9,7 +9,7 @@ use iutnc\nrv\repository\NRVRepository;
  * Classe représentant l'action de gestion des préférences
  * @package iutnc\nrv\action
  */
-class Preferences extends Action {
+class DisplayReferences extends Action {
 
     /**
      * Exécute l'action de la page

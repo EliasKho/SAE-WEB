@@ -9,7 +9,7 @@ use iutnc\nrv\repository\NRVRepository;
  * Classe qui affiche tous les spectacles
  * @package iutnc\nrv\action
  */
-class Spectacles extends Action {
+class DisplayAllSpectacles extends Action {
 
     /**
      * methode qui affiche tous les spectacles et un formulaire qui propose un filtre
