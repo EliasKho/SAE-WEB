@@ -3,6 +3,7 @@
 namespace iutnc\nrv\action;
 
 use iutnc\nrv\action\Action;
+use iutnc\nrv\auth\AuthnProvider;
 use iutnc\nrv\repository\NRVRepository;
 
 /**
@@ -15,10 +16,9 @@ class Deconnexion extends Action
      */
     protected function executeGet(): string
     {
-        // On détruit la session
-        session_unset();
-        session_destroy();
-        // On redirige vers la page d'accueil
+        // On déconnecte l'utilisateur
+        AuthnProvider::signout();
+        // On renvoie un message de déconnexion
         return "Déconnexion avec succès";
     }
 

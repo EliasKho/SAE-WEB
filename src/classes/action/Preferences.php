@@ -17,10 +17,10 @@ class Preferences extends Action {
      */
     protected function executeGet(): string
     {
+        $r = NRVRepository::getInstance();
         // on vérifie si l'utilisateur est connecté
         if (isset($_SESSION['user'])){
             // on récupère l'utilisateur
-            $r = NRVRepository::getInstance();
             $user = unserialize($_SESSION['user']);
 
             $html = "<h1>Préférences</h1>";
@@ -80,10 +80,10 @@ class Preferences extends Action {
                 }
             }
         }
-
         // après les modifications, on affiche les préférences de l'utilisateur
         $html .= "<ul>";
         foreach ($preferences as $pref) {
+            $pref = intval($pref);
             $spectacle = $r->getSpectacleFromId($pref);
             $sr = new SpectacleRender($spectacle);
             $html.=$sr->renderPreferences()."<br>";

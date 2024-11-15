@@ -43,7 +43,8 @@ class Inscription extends Action {
         $password = $_POST["password"];
         // on essaye de créer le compte
         try {
-            AuthnProvider::register($username, $email, $password,1);
+            // On créer le compte avec le rôle standard
+            AuthnProvider::register($username, $email, $password,User::$STANDARD);
         } catch (AuthnException $e) {
             // en cas d'erreur, on affiche un message d'erreur
             $message = $e->getMessage();

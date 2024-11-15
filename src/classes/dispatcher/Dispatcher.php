@@ -10,17 +10,26 @@ use iutnc\nrv\exception\AuthorizationException;
 use iutnc\nrv\user\User;
 use Exception;
 
-class Dispatcher
-{
+/**
+ * Class Dispatcher : classe permettant de dispatcher les actions et de générer la page HTML
+ */
+class Dispatcher {
+    // action à effectuer
     protected string $action;
 
-    public function __construct()
-    {
+    /**
+     * Constructeur de la classe Dispatcher, initialise l'action à effectuer
+     */
+    public function __construct(){
+        // on récupère l'action à effectuer depuis la query string, ou on met 'default' par défaut
         $this->action = $_GET['action'] ?? 'default';
     }
 
-    public function run(): void
-    {
+    /**
+     * Méthode run : exécute l'action demandée
+     */
+    public function run(): void{
+        // on crée une instance de la classe correspondant à l'action demandée
         switch ($this->action) {
             case 'connexion':
                 $act = new ACT\Connexion();
@@ -65,25 +74,34 @@ class Dispatcher
                 $act = new ACT\DefaultAction();
                 break;
         }
+        // on exécute l'action grâce à invoke et on affiche le résultat
         $this->renderPage($act());
     }
 
-    private function renderPage(string $html): void
-    {
+    /**
+     * Méthode renderPage : génère la page HTML à partir du contenu HTML passé en paramètre
+     * @param string $html : contenu HTML à afficher
+     */
+    private function renderPage(string $html): void{
         $staffMenu='';
         $adminMenu='';
         $connexion='';
+        // on affiche le bouton de déconnexion de l'utilisateur
         $logOut="<li><a href='index.php?action=deconnexion' class='button'>Déconnexion</a></li>";
         try {
+            // on vérifie si l'utilisateur est connecté
             $user = AuthnProvider::getSignedInUser();
+
+            // on vérifie si l'utilisateur est admin ou staff
             $authz = new Authz($user);
-            if ($authz->checkRole(User::$STAFF)) {
-                $staffMenu = "<li><a href='index.php?action=add-spectacle' class='button'>Ajouter Spectacle</a></li>";
-                $staffMenu .= "<li><a href='index.php?action=add-soiree' class='button'>Ajouter Soirée</a></li>";
-            }
-            if ($authz->checkRole(User::$ADMIN)) {
-                $adminMenu = "<li><a href='index.php?action=creerStaff' class='button'>Créer Staff</a></li>";
-            }
+            $authz->checkRole(User::$STAFF);
+            // si l'utilisateur est staff, on affiche les boutons pour ajouter un spectacle et une soirée
+            $staffMenu = "<li><a href='index.php?action=add-spectacle' class='button'>Ajouter Spectacle</a></li>";
+            $staffMenu .= "<li><a href='index.php?action=add-soiree' class='button'>Ajouter Soirée</a></li>";
+
+            $authz->checkRole(User::$ADMIN);
+            // si l'utilisateur est admin, on affiche le bouton pour créer un staff
+            $adminMenu = "<li><a href='index.php?action=creerStaff' class='button'>Créer Staff</a></li>";
         } catch (AuthorizationException $e){
             //cas ou l'utilisateur n'est pas admin
             //on ne fait rien
@@ -95,6 +113,7 @@ class Dispatcher
                  <li><a href='index.php?action=inscription' class='button'>Inscription</a></li>";
         }
 
+        // on génère la page HTML finale, en ajoutant le contenu HTML passé en paramètre
         $final = <<<FIN
         <!DOCTYPE html>
         <html lang='fr'>
@@ -125,7 +144,6 @@ class Dispatcher
         </body>
         </html>
         FIN;
-
         echo $final;
     }
 }

@@ -63,7 +63,8 @@ class CreerStaff extends Action
 
         // Création du staff
         try {
-            AuthnProvider::register($username,$email,$password,2);
+            // Création du compte avec le rôle staff
+            AuthnProvider::register($username,$email,$password,User::$STAFF);
         } catch (Exception $e) {
             return "Erreur lors de l'authentification : ".$e->getMessage();
         }
