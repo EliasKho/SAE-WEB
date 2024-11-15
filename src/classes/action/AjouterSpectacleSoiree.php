@@ -35,7 +35,7 @@ class AjouterSpectacleSoiree extends Action {
         $r = NRVRepository::getInstance();
         // récupération du titre de la soiree
         $soiree = $r->getSoireeFromId($idSoiree);
-        $titre = $soiree->nomSoiree;
+        $titre = htmlspecialchars($soiree->nomSoiree, ENT_QUOTES, 'UTF-8');
 
         $html = <<<HTML
             <h2>Ajouter un spectacle à la soirée : {$titre}</h2>
