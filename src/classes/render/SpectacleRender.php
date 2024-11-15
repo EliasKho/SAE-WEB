@@ -80,15 +80,16 @@ class SpectacleRender{
             $titre = $titre ." [ANNULÉ]";
         }
 
-        // on change le texte du bouton en fonction de l'état du spectacle
-        $buttonText = $estAnnule ? "Rétablir" : "Annuler";
-
         // Si l'utilisateur est connecté et est un staff, définir les boutons "Annuler le spectacle" et "Modifier le spectacle"
         try {
             $user = AuthnProvider::getSignedInUser();
             $authz = new Authz($user);
             $authz->checkRole(User::$STAFF);
-            $btnAnnuler = "<a href='index.php?action=AnnulerSpectacle&idSpectacle=$id' class='button'>$buttonText</a>  ";
+            if (!$estAnnule) {
+                $btnAnnuler = "<a href='index.php?action=AnnulerSpectacle&idSpectacle=$id' class='button'>Annuler</a>  ";
+            } else {
+                $btnAnnuler = "<a href='index.php?action=RetablirSpectacle&idSpectacle=$id' class='button'>Rétablir</a>  ";
+            }
             $btnModifSpec = "<a href='index.php?action=ModifSpectacle&idSpectacle=$id' class='button'>Modifier le spectacle</a>  ";
         } catch (\Exception $e) {
             // Aucun utilisateur connecté ou l'utilisateur n'est pas un admin

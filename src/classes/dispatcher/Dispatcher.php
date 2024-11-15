@@ -62,7 +62,10 @@ class Dispatcher {
                 $act = new ACT\DisplayAllSoirees();
                 break;
             case 'AnnulerSpectacle':
-                $act = new ACT\AnnulerRetablirSpectacle();
+                $act = new ACT\AnnulerSpectacle();
+                break;
+            case 'RetablirSpectacle':
+                $act = new ACT\RetablirSpectacle();
                 break;
             case 'ModifSpectacle':
                 $act = new ACT\ModifierSpectacle();

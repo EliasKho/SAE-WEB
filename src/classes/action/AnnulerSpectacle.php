@@ -12,9 +12,9 @@ use iutnc\nrv\action as ACT;
 use iutnc\nrv\user\User;
 
 /**
- * Action permettant d'annuler ou de rétablir un spectacle.
+ * Action permettant d'annuler un spectacle. Classe séparée de RetablirSpectacle pour éviter de rétablir lors d'un refresh de page
  */
-class AnnulerRetablirSpectacle extends Action
+class AnnulerSpectacle extends Action
 {
     /**
      * Exécute l'action.
@@ -41,18 +41,15 @@ class AnnulerRetablirSpectacle extends Action
         $spectacle = $repository->getSpectacleFromId($idSpectacle);
 
         if ($spectacle) {
-            // Basculer l'état d'annulation
-            if ($spectacle->estAnnule) {
-                $spectacle->changerAnnulation();
-                $message = "Le spectacle a été rétabli.";
-            } else {
+            // Annuler le spectacle si il n'est pas déjà annulé
+            if (!$spectacle->estAnnule) {
                 $spectacle->changerAnnulation();
                 $message = "Le spectacle a été annulé.";
+                // Enregistrer la mise à jour dans la base de données
+                $repository->updateSpectacle($spectacle);
+                // Afficher un message de confirmation
+                echo "<script>window.onload = ()=>{window.alert('$message');};</script>";
             }
-            // Enregistrer la mise à jour dans la base de données
-            $repository->updateSpectacle($spectacle);
-            // Afficher un message de confirmation
-            echo "<script>window.onload = ()=>{window.alert('$message');};</script>";
             // Rediriger vers la liste des spectacles
             $act = new ACT\Spectacles();
             return $act();
