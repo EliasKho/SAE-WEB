@@ -47,6 +47,6 @@ class Connexion extends Action {
         // On récupère l'utilisateur connecté
         $user = unserialize($_SESSION['user']);
         // On retourne un message de bienvenue
-        return "Vous êtes connecté, bienvenue " . $user->username;
+        return "Vous êtes connecté, bienvenue " . htmlspecialchars($user->username, ENT_QUOTES, 'UTF-8');
     }
 }
