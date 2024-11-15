@@ -20,7 +20,7 @@ class DisplayAllSoirees extends Action
         $r = NRVRepository::getInstance();
         $soirees = $r->getAllSoirees();
         // On les affiche toutes avec leur renderer
-        $html = "<h1>Soirées</h1>";
+        $html = "<h1 class='centre'>Soirées</h1>";
         foreach ($soirees as $soiree) {
             // On crée un renderer pour chaque soirée
             $render = new SoireeRender($soiree);

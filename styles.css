@@ -58,7 +58,6 @@ nav ul li {
     background-color: #0056b3;
 }
 
-
 /* Contenu principal */
 .content {
     margin-top: 30px;
@@ -83,6 +82,29 @@ img {
     max-height: 50%;
     height: auto;
     width: auto;
+}
+
+.spectacle {
+    display: block;
+    text-align: center;
+    background-color: #ffffff;
+    transition: background-color 0.5s ease;
+}
+
+.spectacle:hover {
+    background-color: #cacaca;
+}
+
+.button-group {
+    text-align: center;
+}
+
+.centre {
+    text-align: center;
+}
+
+.soiree {
+    text-align: center;
 }
 
 

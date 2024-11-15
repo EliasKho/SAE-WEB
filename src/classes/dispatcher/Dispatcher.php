@@ -121,13 +121,14 @@ class Dispatcher {
         <!DOCTYPE html>
         <html lang='fr'>
         <meta charset='UTF-8'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <head>
             <title>NRV</title>
             <link rel="stylesheet" href="styles.css">
         </head>
         <body>
             <header>
-                <h1 id="titrer">Bienvenue sur le site NRV</h1>
+                <h1 class="centre" id="titrer">Bienvenue sur le site NRV</h1>
                 <nav>
                     <ul id="ulmenu">
                         <li><a href='index.php?action=menu' class='button'>Accueil</a></li>
