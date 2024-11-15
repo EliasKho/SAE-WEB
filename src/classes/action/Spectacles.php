@@ -38,12 +38,21 @@ class Spectacles extends Action {
         // on utilise une méthode pour créer le formulaire
         $html = $this->form($r);
         // on récupère les valeurs du formulaire
-        $date = isset($_POST['date']) ?? "";
-        $style = isset($_POST['style']) ?? "";
-        $lieu = isset($_POST['lieu']) ?? "";
+        $date = "";
+        $style = "";
+        $lieu = "";
+        if (isset($_POST['date'])){
+            $date = $_POST['date'];
+        }
+        if (isset($_POST['style'])){
+            $style = $_POST['style'];
+        }
+        if (isset($_POST['lieu'])){
+            $lieu = $_POST['lieu'];
+        }
 
         // on récupère les spectacles filtrés
-        $spectacles = $r->getSpectaclesFiltrés($date, $style, $lieu);
+        $spectacles = $r->getSpectaclesFiltres($date, $style, $lieu);
         // on affiche un message si aucun spectacle n'est trouvé
         if ($spectacles == null) {
             $html .= "<p>Aucun spectacle trouvé.</p>";

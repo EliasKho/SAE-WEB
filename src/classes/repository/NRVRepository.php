@@ -609,13 +609,16 @@ class NRVRepository{
      * Fonction qui retourne des informations concernant un spectacle qui sont stockées dans la table soiree
      * @param int $idSpectacle
      */
-    public function getInfosFromSpectacleId(int $idSpectacle): array{
+    public function getInfosFromSpectacleId(int $idSpectacle): ?array{
         // on prépare une requête
         $stmt = $this->pdo->prepare("SELECT * FROM soiree INNER JOIN appartient ON soiree.idSoiree = appartient.idSoiree WHERE idSpectacle = ?");
         $stmt->bindParam(1, $idSpectacle);
         $stmt->execute();
         // on récupère le résultat et on le retourne
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($result === false) {
+            return null;
+        }
         return $result;
     }
 
@@ -663,7 +666,7 @@ class NRVRepository{
      * Fonction qui retourne l'id de la soirée à partir de l'id d'un spectacle
      * @param int $idSpectacle
      */
-    public function getSoireeFromSpectacleId(int $idSpectacle): int{
+    public function getSoireeFromSpectacleId(int $idSpectacle): ?int{
         // on prépare une requête
         // un spectacle n'appartient qu'a une soirée en même temps
         $stmt = $this->pdo->prepare("SELECT * FROM appartient WHERE idSpectacle = ?");
@@ -671,6 +674,9 @@ class NRVRepository{
         $stmt->execute();
         // on récupère le résultat
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($result === false) {
+            return null;
+        }
         // on retourne l'id de la soirée
         return $result['idSoiree'];
     }
@@ -741,50 +747,56 @@ class NRVRepository{
      * @param string $lieu
      * @return array
      */
-    public function getSpectaclesFiltrés(string $date, string $style, string $lieu): array{
+    public function getSpectaclesFiltres(string $date, string $style, string $lieu): array{
         // si les trois paramètres sont vides, on retourne tous les spectacles car aucun tri
         if ($date == "" && $style == "" && $lieu == "") {
             return $this->getAllSpectacles();
         }
-
-        // on prépare le début de la requête : jointure sur toutes les tables utiles
-        $query = "SELECT * FROM spectacle 
+        // si un seul paramètre est donné, on fait une requête simple car le spectacle n'appartient à aucune soirée
+        if ($date == "" && $lieu == "") {
+            $query = "SELECT * FROM spectacle where idStyle = ?";
+            $requete = $this->pdo->prepare($query);
+            $requete->bindParam(1, $style);
+        }
+        else {
+            // on prépare le début de la requête : jointure sur toutes les tables utiles
+            $query = "SELECT * FROM spectacle 
                                             JOIN appartient on spectacle.idSpectacle = appartient.idSpectacle
                                             JOIN soiree on appartient.idSoiree = soiree.idSoiree
                                             JOIN lieu on soiree.idLieu = lieu.idLieu";
-        // on initialise le nombre de paramètres à 0
-        $nbParams = 0;
-        // on ajoute les conditions en fonction des paramètres donnés
-        if ($date != "") {
-            $query .= " WHERE soiree.dateSoiree = STR_TO_DATE(?, '%Y-%m-%d')";
-            $nbParams++;
-        }
-        else {
-            // condition présente pour éviter les erreurs de syntaxe
-            $query .= " WHERE 1=1";
-        }
-        if ($style!= "") {
-            $query.= " AND spectacle.idStyle =?";
-            $nbParams++;
-        }
-        if ($lieu!= "") {
-            $query.= " AND lieu.idLieu =?";
-            $nbParams++;
-        }
-        // on prépare la requête
-        $requete = $this->pdo->prepare($query);
+            // on initialise le nombre de paramètres à 0
+            $nbParams = 0;
+            // on ajoute les conditions en fonction des paramètres donnés
+            if ($date != "") {
+                $query .= " WHERE soiree.dateSoiree = STR_TO_DATE(?, '%Y-%m-%d')";
+                $nbParams++;
+            } else {
+                // condition présente pour éviter les erreurs de syntaxe
+                $query .= " WHERE 1=1";
+            }
+            if ($style != "") {
+                $query .= " AND spectacle.idStyle =?";
+                $nbParams++;
+            }
+            if ($lieu != "") {
+                $query .= " AND lieu.idLieu =?";
+                $nbParams++;
+            }
+            // on prépare la requête
+            $requete = $this->pdo->prepare($query);
 
-        // on ajoute les paramètres dans le sens inverse en fonction du nombre de paramètres
-        if ($lieu != "" & $nbParams > 0) {
-            $requete->bindParam($nbParams, $lieu);
-            $nbParams--;
-        }
-        if ($style != "" & $nbParams > 0) {
-            $requete->bindParam($nbParams, $style);
-            $nbParams--;
-        }
-        if ($date != "" & $nbParams > 0) {
-            $requete->bindParam($nbParams, $date);
+            // on ajoute les paramètres dans le sens inverse en fonction du nombre de paramètres
+            if ($lieu != "" & $nbParams > 0) {
+                $requete->bindParam($nbParams, $lieu);
+                $nbParams--;
+            }
+            if ($style != "" & $nbParams > 0) {
+                $requete->bindParam($nbParams, $style);
+                $nbParams--;
+            }
+            if ($date != "" & $nbParams > 0) {
+                $requete->bindParam($nbParams, $date);
+            }
         }
 
         // on exécute la requête
