@@ -138,12 +138,12 @@ INSERT INTO SOIREE (nomSoiree, thematique, dateSoiree, horaireDebut, tarif, idLi
 
 -- Insertion de spectacles avec la durée en minutes
 INSERT INTO SPECTACLE (titre, description, video, horaireSpec, dureeSpec, idStyle) VALUES
-                                                                                       ('The Classic Rock Show', 'Un hommage aux légendes du rock', 'http://video.com/rockshow', '19:30:00', 90, 1),
-                                                                                       ('Metal Overdrive', 'Concert de heavy metal intense', 'http://video.com/metaloverdrive', '20:15:00', 120, 4),
-                                                                                       ('Blues Revival', 'Ambiance blues avec les meilleurs artistes', 'http://video.com/bluesrevival', '18:45:00', 110, 2),
-                                                                                       ('Smooth Jazz Evening', 'Jazz classique et moderne', 'http://video.com/jazzevening', '19:15:00', 75, 3),
-                                                                                       ('Rock Revival', 'Retour aux classiques du rock', 'http://video.com/rockrevival', '20:45:00', 105, 1),
-                                                                                       ('Pop Extravaganza', 'Concert pop pour toute la famille', 'http://video.com/popextravaganza', '21:15:00', 80, 5);
+                                                                                       ('The Classic Rock Show', 'Un hommage aux légendes du rock', 'https://www.youtube.com/embed/OBR0XtooX7w', '19:30:00', 90, 1),
+                                                                                       ('Metal Overdrive', 'Concert de heavy metal intense', 'https://www.youtube.com/embed/VFOrGkAvjAE', '20:15:00', 120, 4),
+                                                                                       ('Blues Revival', 'Ambiance blues avec les meilleurs artistes', 'https://www.youtube.com/embed/FUWxjHXyrlI', '18:45:00', 110, 2),
+                                                                                       ('Smooth Jazz Evening', 'Jazz classique et moderne', 'https://www.youtube.com/embed/Bpe8Ch-zwWQ', '19:15:00', 75, 3),
+                                                                                       ('Rock Revival', 'Retour aux classiques du rock', 'https://www.youtube.com/embed/-MAJx3hb4KY', '20:45:00', 105, 1),
+                                                                                       ('Pop Extravaganza', 'Concert pop pour toute la famille', 'https://www.youtube.com/embed/Ed8Xx4Pv84w', '21:15:00', 80, 5);
 
 -- Insertion d'artistes
 INSERT INTO ARTISTE (nomArtiste) VALUES
