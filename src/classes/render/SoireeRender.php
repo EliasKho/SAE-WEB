@@ -73,14 +73,14 @@ class SoireeRender{
         $html= <<<FIN
                 <br>
                 <div class='soiree'>
-                    <h2>{$nom}</h2>
+                    <h1>{$nom}</h1>
                     <p>Thématique : {$thematique}</p>
                     <p>Date de la soirée : {$dateSoiree}</p>
                     <p>Horaire de début : {$horaireDebut}</p>
                     <p>Lieu : {$nomLieu}</p>
                     $images
                     <p>Tarif : {$tarif}€</p>
-                    <h1>Spectacles de la soiree</h1>
+                    <h2>Spectacles de la soiree</h2>
                 FIN;
         // On affiche les spectacles de la soirée
         foreach ($spectacles as $spectacle) {
