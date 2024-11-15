@@ -23,7 +23,7 @@ class Preferences extends Action {
             // on récupère l'utilisateur
             $user = unserialize($_SESSION['user']);
 
-            $html = "<h1>Préférences</h1>";
+            $html = "<h1 class='centre'>Préférences</h1>";
             // on récupère les préférences de l'utilisateur dans la base de données
             $preferences = $r->getPreferencesFromUserId($user->id);
 
@@ -46,7 +46,7 @@ class Preferences extends Action {
         }
         // si l'utilisateur n'est pas connecté
         else {
-            $html = "<h1>Préférences</h1>";
+            $html = "<h1 class='centre'>Préférences</h1>";
             // on vérifie si le cookie des préférences existe
             if (!isset($_COOKIE["preferences"])) {
                 // si le cookie n'existe pas, on le crée avec un tableau vide

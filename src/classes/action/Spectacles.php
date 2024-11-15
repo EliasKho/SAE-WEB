@@ -67,8 +67,8 @@ class Spectacles extends Action {
     protected function form(NRVRepository $r): string{
         // on crée le formulaire, on peut filtrer par date, style et lieu
         $html = <<<FIN
-        <h3>Tri :</h3>
-        <form method="post" action="?action=spectacles">
+        <h3 class="centre">Tri :</h3>
+        <form class="centre" method="post" action="?action=spectacles">
             <label for="date">Date :</label>
             <input type="date" name="date" id="date">
             <label for="style">Style :</label>
