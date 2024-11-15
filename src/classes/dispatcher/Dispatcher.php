@@ -38,10 +38,10 @@ class Dispatcher {
                 $act = new ACT\Inscription();
                 break;
             case 'preferences':
-                $act = new ACT\Preferences();
+                $act = new ACT\DisplayReferences();
                 break;
             case 'spectacles':
-                $act = new ACT\Spectacles();
+                $act = new ACT\DisplayAllSpectacles();
                 break;
             case 'display-spectacle':
                 $act = new ACT\DisplaySpectacle();
